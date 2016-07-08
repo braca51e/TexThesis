@@ -1,5 +1,12 @@
 # Object file
 *.o
 
-# Ada Library Information
-*.ali
+# LatexFiles
+*.lof
+*.dvi
+*.out
+*.toc
+*.lot
+*.pdf
+*.gz
+*.log
