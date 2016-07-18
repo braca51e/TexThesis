@@ -7,6 +7,5 @@
 *.out
 *.toc
 *.lot
-*.pdf
 *.gz
 *.log
