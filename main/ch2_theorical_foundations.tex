@@ -17,25 +17,91 @@ CS takes advantage of the certainty that plentiful natural signals are sparse or
 Measurements in CS are obtained by using a linear operator that takes $M < N$ inner products between $\mathbf{x}$ and a set of vectors $\{\phi\}_{i=1}^{M}$. \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{CS1.png} 
-\caption[A floating figure]{Measurement proces in compressed sensing.}
+\caption[Compressed sensing measurement process]{Measurement proces in compressed sensing.}
 \label{fig:csmea} 
 \end{figure}
 Figure \ref{fig:csmea} depicts the operation. Putting everything together each meaasurement $y_i$ is an $ M \times 1$ vector and $\{\phi\}_{i}^{T}$ representing the rows as a $ M \times N$ matrix $\mathbf{\Phi)}$, then the sampling process is
 \begin{equation} \label{eq:signal2}
 \hspace{3em} \hspace{3em} \hspace{3em} y = \Phi x = \Phi\Psi\alpha \hspace{3em}
 \end{equation}    
-from that one can see that the product of matrices $\Phi\Psi$ has size $ M \times N$ and the measurement matrix $\mathbf{\Phi}$ in independent from the signal $\mathbf{x)}$. The previous is imporantat since the choice of the sensing matrix plays an important role for the reconstruction process, that is recovering $\mathbf{x)}$ from measurements $\mathbf{y)}$. In particular, $\Phi$ and $\Psi$ should be incoherent. Coherence of two matrices is a measure that asserts the level of correlation of $\Phi$ and $\Psi$ and is computed as follows
-\begin{equation} \label{eq:signal2}
+from that one can see that the product of matrices $\Phi\Psi$ has size $ M \times N$ and the measurement matrix $\mathbf{\Phi}$ in independent from the signal $\mathbf{x)}$. The previous is imporantat since the choice of the sensing matrix plays an important role for the reconstruction process, that is recovering $\mathbf{x}$ from measurements $\mathbf{y)}$. In particular, $\Phi$ and $\Psi$ should be incoherent. Coherence of two matrices is a measure that asserts the level of correlation of $\Phi$ and $\Psi$ and is computed as follows
+\begin{equation} \label{eq:signal3}
 \hspace{3em} \hspace{3em} \hspace{3em} \mu(\Phi,\Psi) = \max_{k,j}|<\phi_k,\psi_j>|  \hspace{3em}
 \end{equation}   
 the lower $\mu$ the more incoherent the matrices are and therefore it is more probable the sucessful reconstruction of the original signal.
 
-\subsection{Sensing matrix and RIP}
-The sensing matrix $\Phi$ should be chosen so that the recons
+\subsection{Sensing Matrix and RIP}
+The sensing matrix $\Phi$ should be chosen so that the number $M$ of its rows is bigger than the number of nonzeros entries in the sparce signal $K$, that is $M \geq K$. Due to the fact that defining a number $K$ for natural signals is unknown, a constraint commonly referred as $restricted \enspace isometry \enspace property$ (RIP) \cite{candes2005decoding,candes2006stable,candes2008restricted} was proposed. It ensures that the matrix $\Phi$ retains the length of the k-sparse vectors and therefore the signal is not correupted  by the trnasformation going from $\mathbf{x} \in R^N $ to $\mathbf{y} \in R^M $. The mathematical representation of RIP reads
+\begin{equation} \label{eq:rip1}
+\hspace{3em} \hspace{3em} \hspace{3em} (1-\delta_k)\Vert x \Vert_{l_2}^2 \leq \Vert \Phi x \Vert_{l_2}^2 \leq (1+\delta_k)\Vert x \Vert_{l_2}^2  \hspace{3em}
+\end{equation}  
+where $\delta_k$, referred to as $restricted \enspace isometry \enspace constant$, is the smallest number preserving the inequality for the matrix $\Phi$. \
+
+Designing optimal sensing matrices goes beyond the scope of this thesis and because the RIP and incoherence may be obtained with high probability by taking $\Phi$ as a random Gaussian matrix with independent and identically (iid) distributed elements\cite{baraniuk2007compressive} we wiil not devote more time for this topic. Particularly, we will use an iid Gaussian sensing matrix throughout the thesis unless otherwise specified.         
 
 \subsection{Signal Recovery}
+Even though RIP \ref{eq:rip1} and incoherence theoretically ensure that a K-sparse signal might be entirely described with only $M$ measurements, it is still needed to restore the original signal $\mathbf{x}$. A great deal of algorithms alredy existing accomplish the recontruction process by reading the measurements $\mathbf{x}$, the matrix  $\Phi$ and solving an optimization problem. Concretely, most recovery algorithms try to find the best approximation $\hat{x} = \Psi x$ for some transform basis $\Psi$. It has been proved \cite{candes2006near,Donoho01} that the optimal solution for that problem is getting $\hat{x}$ with the smallest $l_0$ norm from measurements $y$ given by         
+\begin{equation} \label{eq:minl0}
+\hspace{3em} \hspace{3em} \hspace{3em} \hat{x} = arg \min_{x} \Vert \Psi x \Vert_0 \hspace{3em} s.t. \enspace \enspace y = \Phi x     \hspace{3em}
+\end{equation}     
+Nevertheless, the solution for \ref{eq:minl0} is an NP-hard that becomes numerically unstable and requires comprehensive computation. As a result, a convex relaxion was introduced and instead the $l_1$ norm is used reducing the problem to a linear program  of the form 
+\begin{equation} \label{eq:minl1}
+\hspace{3em} \hspace{3em} \hspace{3em} \hat{x} = arg \min_{x} \Vert \Psi x \Vert_1 \hspace{3em} s.t. \enspace \enspace y = \Phi x     \hspace{3em}
+\end{equation}
+this holds true because measurements $\mathbf{y}$ were taken using an iid Gausian sensing matrix and therefore a sucessful reconstruction is highly probable to occur \cite{Donoho01,candes2006robust}. Algorithms trying to solve this problem are dubbed iterative given the nature of convex optimization. Among state-of-the-art iterative algorithms one can find \cite{dong2014compressive,li2013efficient,metzler2014denoising} and they are used as a baseline to compare our results.  \
+
+In this thesis we do not aim to find an iterative solution for the afore mention optimization problem in equation \ref{eq:minl1}, instead we explore the promissing capabilities of using deep learning for image processing tasks.
+
    
 \section{Deep Learning}
+Deep learning is a modern field of machine learning that makes used of deep neural networks in order to learn representations of data with several layers of abstraction. It has been an active research topic during recent years because they have acchieved state-of-the-art results in image processing, video, speech and audio applications. It also solves the inability of tradicional machine-learning methods to process plain raw data. Moreover, there is no need to have extensive exprience in order to engineer features that transform data into useful representations or feature vectors that will ultimately allow the learning algorithm detect or classify the data. Deep-learning techniques learn multiple level representations, realized by simple but non-linear entities transforming the representation level by level into a higher and more abstract one. By stacking a sufficiente number of such layers and by implementing a learning process, highly complex functions can be learned and accurately approximated. The main singulariy of such layers is that the features are learned without direct human intervention rather, they are learned directly from the data.   \   
+
+Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}.          
+\subsection{Neural Networks}
+Neural networks (NN's), in the filed onf machine learning, are a mathematical attempt to approximate and stimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's but, they have found effective and active usage until recent years. There are three major concepts concerning NN's, network architecture, activation function and network training.
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{NN1.png} 
+\caption[Neural network example architecture]{A neural network takes $x_D$ inputs and gives $y_K$ outputs. Hidden units refers the the number of layers between the input and output layers, the term deep comes when the number of layers and its size grows larger. Most commonly $\omega_{MD}^{(i)}$ is represented as the weight parameter.}
+\label{fig:NNim1} 
+\end{figure} 
+\begin{itemize}
+\item \textbf{Network architecture} describes the number of parameters that build the network, the number of hidden layers and input and output size. Figure \ref{fig:NNim1} shows a node-like generalization of a network architecture, how the information flows and the parameters $\omega$ the are learned during training.  
+\item \textbf{Activation function} specifies the output of each hidden node in the network according to a given input. It is commonly referred to as nonlinearity because of the nature of the functions being used. Most popular functions are sigmoid eq. \ref{eq:sigmoid}, tanh eq. \ref{eq:tanh} and more recently linear rectifier (ReLu) eq.\ref{eq:Relu} \cite{glorot2011deep}. It also exposes a direct dependency with weight parameters $\omega$. 
+\begin{equation} \label{eq:sigmoid}
+\hspace{3em} \hspace{3em} \hspace{3em} \sigma (x) = \frac{1}{1+e^{(-x)}} \enspace \enspace \hspace{3em}
+\end{equation} 
+\begin{equation} \label{eq:tanh}
+\hspace{3em} \hspace{3em} \hspace{3em} f (x) = \frac{2}{1+e^{(-2x)}}-1 \enspace \enspace \hspace{3em}
+\end{equation} 
+\begin{equation} \label{eq:Relu}
+\hspace{3em} \hspace{3em} \hspace{3em} f (x) = \begin{cases} 0 & \text{for } x < 0 \\ x & \text{for } x \geqslant 0    \end{cases} \enspace \enspace \hspace{3em}
+\end{equation} 
+\item \textbf{Network training} is the process for learning the values of parameters $\omega$ of the network. The simplest way to solve the problem is by minimizing an error function, for example least square error. That is achieved from a set of input vectors $x_n$, for $n = 1,...,N$, along with target vectors $y_n$. Using optimization theory we try to minimize 
+\begin{equation} \label{eq:Relu}
+\hspace{3em} \hspace{3em} \hspace{3em} E (w) = \frac{1}{2} \sum\limits_{n=1}^N \Vert f(x_n,w) - y_n\Vert^2 \enspace \enspace \hspace{3em}
+\end{equation} 
+thereby obtaining the optimum values for $\omega$. The actual minimization makes uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network. Chain rule, forward pass and backpropagation in the context of NN's are respectively depicted in Figures \ref{fig:CRim1}, \ref{fig:FPim1}, \ref{fig:BPim1} .   
+
+\end{itemize} 
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.9]{CR1.png} 
+\caption[Chain rule in neural networks]{Chain rule computation in the network.}
+\label{fig:CRim1} 
+\end{figure} 
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{FP1.png} 
+\caption[Forward pass to compute error]{Forward pass is used to compute the error using the current values of weight patameters.}
+\label{fig:FPim1} 
+\end{figure}     
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{BP1.png} 
+\caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated throught the network and parameter weightd are updated accordingly.}
+\label{fig:BPim1} 
+\end{figure}
 
 \section{Convolutional Neural Networks}
 
