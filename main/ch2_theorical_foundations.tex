@@ -75,13 +75,13 @@ Neural networks (NN's), in the filed onf machine learning, are a mathematical at
 \hspace{3em} \hspace{3em} \hspace{3em} f (x) = \frac{2}{1+e^{(-2x)}}-1 \enspace \enspace \hspace{3em}
 \end{equation} 
 \begin{equation} \label{eq:Relu}
-\hspace{3em} \hspace{3em} \hspace{3em} f (x) = \begin{cases} 0 & \text{for } x < 0 \\ x & \text{for } x \geqslant 0    \end{cases} \enspace \enspace \hspace{3em}
+\hspace{3em} \hspace{3em} f (x) = \begin{cases} 0 & \text{for } x < 0 \\ x & \text{for } x \geqslant 0    \end{cases} \hspace{3em} or \hspace{3em} f (x) = \max (0,x) \hspace{3em}
 \end{equation} 
 \item \textbf{Network training} is the process for learning the values of parameters $\omega$ of the network. The simplest way to solve the problem is by minimizing an error function, for example least square error. That is achieved from a set of input vectors $x_n$, for $n = 1,...,N$, along with target vectors $y_n$. Using optimization theory we try to minimize 
-\begin{equation} \label{eq:Relu}
+\begin{equation} \label{eq:LS1}
 \hspace{3em} \hspace{3em} \hspace{3em} E (w) = \frac{1}{2} \sum\limits_{n=1}^N \Vert f(x_n,w) - y_n\Vert^2 \enspace \enspace \hspace{3em}
 \end{equation} 
-thereby obtaining the optimum values for $\omega$. The actual minimization makes uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network. Chain rule, forward pass and backpropagation in the context of NN's are respectively depicted in Figures \ref{fig:CRim1}, \ref{fig:FPim1}, \ref{fig:BPim1} .   
+thereby obtaining the optimum values for $\omega$. The actual minimization makes uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network. Chain rule, forward pass and backpropagation in the context of NN's are respectively depicted in Figures \ref{fig:CRim1}, \ref{fig:FPim1}, \ref{fig:BPim1}.   
 
 \end{itemize} 
 \begin{figure}[tb] 
@@ -89,19 +89,21 @@ thereby obtaining the optimum values for $\omega$. The actual minimization makes
 \includegraphics[scale=0.9]{CR1.png} 
 \caption[Chain rule in neural networks]{Chain rule computation in the network.}
 \label{fig:CRim1} 
-\end{figure} 
+\end{figure}
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{FP1.png} 
 \caption[Forward pass to compute error]{Forward pass is used to compute the error using the current values of weight patameters.}
 \label{fig:FPim1} 
-\end{figure}     
+\end{figure}
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{BP1.png} 
 \caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated throught the network and parameter weightd are updated accordingly.}
 \label{fig:BPim1} 
-\end{figure}
+\end{figure} 	
+    
 
-\section{Convolutional Neural Networks}
+\subsection{Convolutional Neural Networks}
+This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test!
 
