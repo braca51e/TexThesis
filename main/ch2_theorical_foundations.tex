@@ -58,7 +58,7 @@ Deep learning is a modern field of machine learning that makes used of deep neur
 
 Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}.          
 \subsection{Neural Networks}
-Neural networks (NN's), in the filed onf machine learning, are a mathematical attempt to approximate and stimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's but, they have found effective and active usage until recent years. There are three major concepts concerning NN's, network architecture, activation function and network training.
+Neural networks (NN's), in the filed of machine learning, are a mathematical attempt to approximate and stimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's but, they have found effective and active usage until recent years. There are three major concepts concerning NN's, network architecture, activation function and network training.
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{NN1.png} 
@@ -66,7 +66,7 @@ Neural networks (NN's), in the filed onf machine learning, are a mathematical at
 \label{fig:NNim1} 
 \end{figure} 
 \begin{itemize}
-\item \textbf{Network architecture} describes the number of parameters that build the network, the number of hidden layers and input and output size. Figure \ref{fig:NNim1} shows a node-like generalization of a network architecture, how the information flows and the parameters $\omega$ the are learned during training.  
+\item \textbf{Network architecture} describes the number of parameters that build the network, the number of hidden layers and input and output size. Figure \ref{fig:NNim1} shows a node-like generalization of a  fully connected network architecture, how the information flows and the parameters $\omega$ the are learned during training.  
 \item \textbf{Activation function} specifies the output of each hidden node in the network according to a given input. It is commonly referred to as nonlinearity because of the nature of the functions being used. Most popular functions are sigmoid eq. \ref{eq:sigmoid}, tanh eq. \ref{eq:tanh} and more recently linear rectifier (ReLu) eq.\ref{eq:Relu} \cite{glorot2011deep}. It also exposes a direct dependency with weight parameters $\omega$. 
 \begin{equation} \label{eq:sigmoid}
 \hspace{3em} \hspace{3em} \hspace{3em} \sigma (x) = \frac{1}{1+e^{(-x)}} \enspace \enspace \hspace{3em}
@@ -99,11 +99,24 @@ thereby obtaining the optimum values for $\omega$. The actual minimization makes
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{BP1.png} 
-\caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated throught the network and parameter weightd are updated accordingly.}
+\caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated through the network and parameter weight are updated accordingly.}
 \label{fig:BPim1} 
 \end{figure} 	
-    
 
 \subsection{Convolutional Neural Networks}
-This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test! This is just a test!
+Convolutional Neural Networks (CNN's/ConvNets) are a subset of the previously described neural networks. They are also build of neurons that aim to learn weight parameters $\omega$ and bias parameters $b$ by performing dot products and normally followed by one of the afore mention nonllinear functions. The main difference, however, is that CNN's assume that the input are images that are convolved through the network during the forward pass.  
+
+\subsubsection{CNN architecture}
+In contrast with fully connected networks, the layers of CNN's are arranged in a 3D fashion seen as: width, height, depth. It differentiates in the sense that only a small subset of a layer connects to the one before it, thus reducing the number of neurons and encapsulating certain features in the input image as shown in  figure \ref{fig:CNNim1}. \
+
+CNN's are assembled by interconnecting three different types of layers one after another: Convolutional Layer, Pooling Layer and Fully-Connected Layer. Optionally, the output of each layer is passed through the ReLu function \ref{eq:Relu}. 
+\begin{itemize}
+\item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four parameters: kernel size or receptive fields $K$, number of zero padding $P$, spatial extent $F$ and stride $S$. Figure \ref{fig:CNN2.png} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  
+\end{itemize}
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{CNN1.png} 
+\caption[Fully connected network VS CNN]{\textbf{Left:} Fully connected network with 2 hidden layers. \textbf{Right} 3D (width, height, depth) arrangement of neurons. Each layer of the CNN carries out a 3D transformation on each channel (RGB in case of images). }
+\label{fig:CNNim1} 
+\end{figure}
 
