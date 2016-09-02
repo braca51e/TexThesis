@@ -55,7 +55,7 @@ Finally, in order to evaluate the performance of our trained network we introduc
 \label{fig:EVALim1} 
 \end{figure}
 
-\subsection{Preprocessing of the images}
+\subsection{Preprocessing of the images} \label{sec:prepro}
 Even though grayscale images can be easily interpreted as a $2D$ matrix, CNN's expect as an input a $3D$ tensor, chanpter 2.2.2, complying with the convention depth, height and width. Consequently, extra preprocessing is carried out to generate the data set that is used as the final input of the network for training. Moreover, we make use of a technique called Block Compressed Sensing (BCS). BCS allows to divide the image into small blocks of size $B \times B$ with $B=16$ and then compress them by using the same sensing matrix $\Phi$. It has the main advantage of having a small sensing matrix that can be easily extended to process high-dimensional images and making the overall process faster \cite{gan2007block, fowler2012block}. Another important parameter is the subrate or subsampling size $M$. That is, how much information we would like to sense. For most of our experiments the we choose $M=16$, we also show results with different $M$ values, yielding a subrate of $1/16$. For an image of size $256 \times 256$ that means there are $65536$ possible samples (original pixel values), by using a subrate of $1/16$ we will only be taking $4096$ measurements from which we weill reconstruct the image.          \
 \\\\
 To demosntrate the process, consider an image randomly taken from one of the datasets. It has a size of $N \times N$ with $N=256$. First, it is converted into  blocks of size $B$ by using MALAB command im2col. Second, the image is multiplied with the sensing matrix $\Phi$ to obtain the measurements. Since the size of $\Phi$ is $M \times N $ and the image size is $N \times N$ the product will have size $M \times N$. At last, the measurements are reshaped into a 3D tensor of size $M \times N \times N$. A pictorical representation of the process can be seen in Figure \ref{fig:PREPROim1}. After preprocessing each image individually, the data used for training and testing is a 4D tensor and each dimmesion is interpreted as follow: $(Number \enspace of \enspace images, \enspace size \enspace of \enspace M ,\enspace size \enspace of \enspace B , \enspace size \enspace of \enspace B)$.  
@@ -72,20 +72,118 @@ The architecture of the network refers to the other in which different layers ar
 This is the first network we propose to recover images from compressed samples is in Figure \ref{fig:ARCNNim1}. It is compossed of an input layer and an output layer. The input layer receives measurements of size $(size \enspace of \enspace M ,\enspace size \enspace of \enspace B , \enspace size \enspace of \enspace B)$, with a kernel size $k=128$ and followed by ReLu. The output layer receives as input the output of the previous layer that is $(size \enspace of \enspace k \enspace in \enspace previous \enspace layer ,\enspace size \enspace of \enspace B , \enspace size \enspace of \enspace B)$ and a kernel $k=256$. The ouput layer is designend so that it matches the size of the original image.  
 \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.5]{ARCNN1.png} 
+\includegraphics[scale=0.4]{ARCNN1.png} 
 \caption[Alpha CNN architecture for recovery ]{Depiction of the alpha CNN architecture.}
 \label{fig:ARCNNim1} 
 \end{figure}
 
 \subsubsection{Beta CNN network}
 During the development of this thesis several attemps for reconstructing images using deep learning were published \cite{kulkarni2016reconnet,mousavi2015deep,iliadis2016deep,iliadis2016deepbinarymask,adler2016deep}. Interestingly, Kulkarni \textit{et al}. \cite{kulkarni2016reconnet} also addressed the problem of CS recovery using a CNN. The other approaches are very similar because they are based on an auto-encoder.  Even more, they do not compressed the images using iid Gaussian matrices. Rather, they learn the sensing matrix $\Phi$ in the first layer. Other interesting findings were made by Kulkarni \textit{et al}. \cite{kulkarni2016reconnet}. They introduced a new parameters that controls the redundancy of the network. Redundancy refers to how large the network will be in relation with the size of the original image. For example, a redundancy factor of 8, would create a reconstruction layer of size $redundancy \times N$. The value 8 turned out to yield better reconstruction performance according to their tests.\\\\
-Based on the previous concepts and proved capabilities of the alpha network we proposed another nework sketched in Figure %\ref      
+Based on the previous concepts and proved capabilities of the alpha network we proposed another nework sketched in Figure \ref{fig:ARCNNim2}. Unlike alpha network, beta network does not receive compressed meaurements as input. Rather, the original image interpreted as blocks is reshaped into a 3D tensor. Doing that, allows the network to learn the sensing matrix, in fact the first layer is interpreted as the compression step. The second layer and third layers are called reconstructions layers. The output layer reshapes the data back to the original image size and is the last step in the recovery process.         
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.5]{ARCNN2.png} 
+\caption[Beta CNN architecture for recovery ]{Depiction of the beta CNN architecture. Notice the first layer is learning the sensing matrix $\Phi$.}
+\label{fig:ARCNNim2} 
+\end{figure}
 
+\subsection{Training CNN's}
+Training is the process of learning the values of the parameters of the networks. During this step one is concerned with choosing an appropriate weight initialization, loss function and parameter update rule.
 
-\subsection{Training CNN for recover}
+\subsubsection{Weight initialization}
+Choosing the right initial values of the network is paramount to secure a sucessful convergence. Furthermore, it can avoid problems like vanishing gradients or ending up being stuck in local minima. Using independent Gaussian random numbers is a very common practice for simple networks but, as complexity increases smarter ways had been investigated \cite{glorot2010understanding}. Glorot and Bengio empirically validated a method to initialize the weights called normalized initialization 
+\begin{equation} \label{eq:Initw1}
+\hspace{3em} \hspace{3em} \hspace{3em} W \sim U [ - \frac{\sqrt{6}}{\sqrt{n_j + n_{j+1}}}, \frac{\sqrt{6}}{\sqrt{n_j + n_{j+1}}} ] \enspace \enspace \hspace{3em}
+\end{equation}  
+were $n_j$ is the layer size of layer $j$. In this thesis we follow the same approach.   
+
+\subsubsection{Loss function}
+Since we need a measure how good the reconstruction from compressed measurements is, we need to define a way to compare the difference (error) against the original image. Not only that, the loss function also serves as an objective that we would like to minimize as much as possible. The choice of the loss functions depends on the type of problem that one is facing, regression or classification, in order to achieve better results. We have chosen to use the mean square error as the loss function (MSE) because it is highly related to an evaluation metric (PSNR) that we will explain later. The MSE is mathematically defined as 
+\begin{equation} \label{eq:MSE1}
+\hspace{3em} \hspace{3em} \hspace{3em} L (w) = \frac{1}{N} \sum\limits_{n=1}^N \Vert f(x_n,w) - y_n\Vert_{2}^2 \enspace \enspace \hspace{3em}
+\end{equation} 
+were $N$ is the number of images in the dataset, $\hat{x} = f(x_n,w)$ represents the nonlinar mapping computed by the CNN and $y_n$ is the originla image. Using backpropagation, we train the CNN by minimizing the loss function defined in \ref{eq:MSE1}.  
+
+\subsubsection{Parameter update rule}     
+The easiest way to update the weights $\omega$ is by following the negative direction of the loss function, commonly referred to as vanilla update. As with initialization methods, the algorithms to find a minimum abound. For our training, we use Adam \cite{kingma2014adam} as it converges faster.
+
+\begin{algorithm}
+\caption{Adam update}
+\label{Adamalg}
+\begin{algorithmic}[1]
+    \Require $\alpha = 0.0005 $: Stepsize, $\epsilon = 10^{-8}$ 
+    \Require $\beta_1 = 0.9$, $\beta_2 = 0.999$: Exponential decay rats for moment stimates
+    \Require $L ( \omega ) $: Loss function
+    \Require $ \omega_0 $: Initial parameter values
+    \State $m_0 \leftarrow 0$ (Initialize $1^{st}$ moment vector)
+    \State $v_0 \leftarrow 0$ (Initialize $2^{nd}$ moment vector)
+    \State $t \leftarrow 0$ (Initialize timestep)
+    \While{$\omega_t$ not converged}
+        \State $t \leftarrow t+1$ 
+        \State $g_t \leftarrow \nabla_{\omega} L_t ( \omega_{t-1} )$ (Gradient of loss function at timestep $t$)
+        \State $m_t \leftarrow \beta_1 \cdot m_{t-1} + ( 1 -  \beta_1) \cdot g_t $ (Update biased first moment stimate)
+        \State $v_t \leftarrow \beta_2 \cdot v_{t-1} + (1 - \beta_2) \cdot g_t $ (Update biased second moment stimate)
+        \State $\hat{m}_t \leftarrow \frac{m_t}{( 1 - \beta_{1}^{t} )}$  (Compute bias-corrected first moment estimate)
+        \State $\hat{v}_t \leftarrow \frac{m_t}{( 1 - \beta_{2}^{t} )}$  (Compute bias-corrected second moment estimate)
+        \State $\omega_t \leftarrow \omega_{t-1} - \alpha \cdot \frac{ \hat{m}_t }{ ( \sqrt{\hat{v}_t } + \epsilon ) } $ (Update parameters)
+
+    \EndWhile
+    
+    \State \Return $\omega_t $ (Resulting parameters)   
+\end{algorithmic}
+\end{algorithm}
+    
 
 \subsection{Postprocessing of reconstructed images}
+As it can de inferred from Figure \ref{fig:ARCNNim2} that the ouuput of the CNN is not an image. Rather, it is a 3D tensor from which, with minor extra postprocessing, we recover the image. This process aims to invert the prepocessing step explained in section \ref{sec:prepro}. \\\\
+
+First the image is reshaped back to ist original size $N \times N$. Then using col2im MATLAB commnad get the reconstructed image ready to be visualized. Image \ref{fig:Posproim1} shows the procedure. Optionally, we also make use of the very common image denoiser BM3D \cite{dabov2007image}. That is because we would like to get rid of the block nature previously explained. 
+
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{POSPRO1.png} 
+\caption[Postprocessing of recovered images ]{Postprocessing illustration to visualize the reconstructed image.}
+\label{fig:Posproim1} 
+\end{figure}
 
 \subsection{Evaluation metrics}
+Whenever images are undergoing any type of processing, they are bound to suffer a deprecation of the visual quality. Namely, for applications that are ultimately perceived by human eye, there is a need to precisely evaluate the degradation rate (noise) in the image that a certain algorithm adds. Even though agreeing on a metric that is capable of fairly measureing the visual impact is somewhat subjective, there are two methosd widely used for that purpose Peak signal-noise-to ratio (PSNR) and Structural similariry index (SSIM) \cite{wang2004image}.     
+
+\subsubsection{PSNR} 
+The most common and straightforward way to compute measurement metric is the mean square error (MSE) \ref{eq:MSE1}. It is obtained by averaging the difference between the original pixel values of an image and the pixel values of a reconstructed image. By using the MSE of the original image $I$ and reconstructed $RI$, the PSNR expressed decibels (dB) is calculated as
+\begin{equation} \label{eq:mse1}
+\hspace{3em} \hspace{3em} \hspace{3em} MSE = \frac{1}{NN} \sum\limits_{i=1}^N \sum\limits_{j=1}^N [ I( i , j) - RI ( i , j ) ]^2    \enspace \enspace \hspace{3em}
+\end{equation} 
+
+\begin{equation} \label{eq:LS1}
+\hspace{3em} \hspace{3em} \hspace{3em} PSNR = 10 \cdot log_{10} \bigg( \frac{ MAX_{I}^{2} }{MSE} \bigg) \enspace \enspace \hspace{3em}
+\end{equation} 
+
+Here, $MAX_{I}^{2}$ is the maximum pixel value of the image. For grayscale image such value is 255. PSNR has the advantages of being simple and mathematically suited from the optimization point of view but, it also has two major disadvantages: it fails to keep the structure of the image which means that two images with the same MSE may have a considerable visual impact difference and it does not consider the human perception system. Desired values for PSNR should be above 30dB. 
+
+\subsubsection{SSIM}
+SSIM is a method measuring the similarity between two images. Unlike PSRN, it uses a more complex approach to computing the difference in accordance with the human visual perception. It takes into consideration three features of an image: luminance ($l$), contrast ($c$) and structure ($s$). For two images $I$ and $RI$, each term is evaluated as
+\begin{equation} \label{eq:Lumi}
+\hspace{3em} \hspace{3em} \hspace{3em} l(I,RI)= \frac{2\mu_{I} \mu_{RI} + C_1}{\mu_{I}^2 + \mu_{RI}^2 + C_1} \enspace \enspace \hspace{3em}
+\end{equation}
+\begin{equation} \label{eq:contra}
+\hspace{3em} \hspace{3em} \hspace{3em} c(I,RI)= \frac{2\sigma_{I} \sigma_{RI} + C_2}{\sigma_{I}^2 + \sigma_{RI}^2 + C_2} \enspace \enspace \hspace{3em}
+\end{equation}
+\begin{equation} \label{eq:Struct}
+\hspace{3em} \hspace{3em} \hspace{3em} s(I,RI)= \frac{\sigma_{IRI} + C_3}{\sigma_{I} \sigma_{RI} + C_3} \enspace \enspace \hspace{3em}
+\end{equation}
+variables $\mu_{I}$, $\mu_{RI}$, $\sigma_{I}$, $\sigma_{RI}$ and $\sigma_{IRI}$ represent local means, standard deviations and cross-covariance of images I and RI. Arguments $C_1$, $C_2$ and $C_3$ are predefined constants. The final index is weighted a multiplication of the terms
+\begin{equation} \label{eq:ssim1}
+\hspace{3em} \hspace{3em} \hspace{3em} SSIM(I,RI)= \big[ l(I,RI)^{\alpha} \cdot c(I,RI)^{\beta} \cdot s(I,RI)^{\gamma} \big]   \enspace \enspace \hspace{3em}
+\end{equation}
+In practice $\alpha = \beta = \gamma = 1$, and $C_3 = \frac{C_2}{2}$ simplying to
+\begin{equation} \label{eq:ssim2}
+\hspace{3em} \hspace{3em} \hspace{3em} SSIM(I,RI)= \frac{(2\mu_{I} \mu_{RI} + C_1)(2\sigma_{IRI}+C_2)}{(\mu_{I}^2 + \mu_{RI}^2 + C_1)(\sigma_{I}^2 \sigma_{RI}^2 + C_2)}   \enspace \enspace \hspace{3em}
+\end{equation}
+This index can have values ssim $\in [0,1]$ with $0$ meaning that the images are not similar at all and with $1$ meaning that images are exactly the same. Ssim values above 0.7 are considered sufficently good for any reconstruction algorithm.  
+
+    
+ 
+
 
   

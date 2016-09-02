@@ -3,7 +3,9 @@ In this chapter we will explain the necessary background that is used throughout
 
 \section{Compressed Sensing}
 
-Compressed sensing is mathematical theory that deals with the problem of recovering a signal from a small number of measurements, the number of measurements is less than the minimun number of samples defined by Shanon-Nyquist theorem (sampling acquisition must be done at least twice the highest frequency in the signal). For many applications, imaging and video, the sampling rate specified by Nyquist might end up being very large that the amount of samples that have to be compressed and transmitted increases the complexity of the system and makes it costly. Compressed sensing contradicts the previous staments since it claims that a signal may be recovered with lesser samples or measurements than conventional approaches. That is possible because it proposes a generalization of a linear mapping paired with optimization in order do the sampling and recovery process at notably inferior rates than that imposed by Nyquist rate. CS justification is based on two principles: sparcity of the signal, and incoherence which refers to sampling/sensing representation, both terms will be further discussed. In addition to that, CS tries to overcome two of the major incapabilities of sample-compress schemes: First, the number of samples or measurements is cosiderably reduced. Second, the compression stage occurs inside the sensor and therefore there is no need to add extra encoding computation.
+Compressed sensing is mathematical theory that deals with the problem of recovering a signal from a small number of measurements, the number of measurements is less than the minimun number of samples defined by Shanon-Nyquist theorem (sampling acquisition must be done at least twice the highest frequency in the signal). For many applications, imaging and video, the sampling rate specified by Nyquist might end up being very large that the amount of samples that have to be compressed and transmitted increases the complexity of the system and makes it costly. Compressed sensing contradicts the previous staments since it claims that a signal may be recovered with lesser samples or measurements than conventional approaches. That is possible because it proposes a generalization of a linear mapping paired with optimization in order do the sampling and recovery process at notably inferior rates than that imposed by Nyquist rate. \
+
+Compressed sesnsing heavily relies on two principles: sparcity of the signal, and incoherence, which refers to sampling/sensing representation, both terms will be further discussed. In addition to that, CS tries to overcome two of the major incapabilities of sample-compress schemes: First, the number of samples or measurements is cosiderably reduced. Second, the compression stage occurs inside the sensor (hardware) therefore, there is no need to add extra encoding computation.
 
 \subsection{Sparsity of a signal}
 The mathematical formulation of sparcity is defined as follows: a signal $\mathbf{x \in R^N}$ (for instance $n$-pixels of an image) is interpreted in terms of its basis representation as a linear combination of the orthonormal basis $\{\psi\}_{i=1}^{N}$ and coefficients $\mathbf{\alpha}$ as  
@@ -54,7 +56,9 @@ In this thesis we do not aim to find an iterative solution for the afore mention
 
    
 \section{Deep Learning}
-Deep learning is a modern field of machine learning that makes used of deep neural networks in order to learn representations of data with several layers of abstraction. It has been an active research topic during recent years because they have acchieved state-of-the-art results in image processing, video, speech and audio applications. It also solves the inability of tradicional machine-learning methods to process plain raw data. Moreover, there is no need to have extensive exprience in order to engineer features that transform data into useful representations or feature vectors that will ultimately allow the learning algorithm detect or classify the data. Deep-learning techniques learn multiple level representations, realized by simple but non-linear entities transforming the representation level by level into a higher and more abstract one. By stacking a sufficiente number of such layers and by implementing a learning process, highly complex functions can be learned and accurately approximated. The main singulariy of such layers is that the features are learned without direct human intervention rather, they are learned directly from the data.   \   
+Deep learning is a modern field of machine learning that makes used of deep neural networks in order to learn representations of data with several layers of abstraction. It has been an active research topic during recent years because they have acchieved state-of-the-art results in image processing, video, speech and audio applications. It also solves the inability of tradicional machine-learning methods to process plain raw data. Moreover, there is no need to have extensive exprience in order to engineer features that transform data into useful representations or feature vectors that will ultimately allow the learning algorithm detect or classify the data. \
+
+Deep-learning techniques learn multiple level representations, realized by simple but non-linear entities transforming the representation level by level into a higher and more abstract one. By stacking a sufficiente number of such layers and by implementing a learning process, highly complex functions can be learned and accurately approximated. The main singulariy of such layers is that the features are learned without direct human intervention rather, they are learned directly from the data.   \   
 
 Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}.          
 \subsection{Neural Networks}
@@ -99,7 +103,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization makes
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{BP1.png} 
-\caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated through the network and parameter weight are updated accordingly.}
+\caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated through the network updating $\omega$ parameters accordingly.}
 \label{fig:BPim1} 
 \end{figure} 	
 
@@ -111,12 +115,39 @@ In contrast with fully connected networks, the layers of CNN's are arranged in a
 
 CNN's are assembled by interconnecting three different types of layers one after another: Convolutional Layer, Pooling Layer and Fully-Connected Layer. Optionally, the output of each layer is passed through the ReLu function \ref{eq:Relu}. 
 \begin{itemize}
-\item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four parameters: kernel size or receptive fields $K$, number of zero padding $P$, spatial extent $F$ and stride $S$. Figure \ref{fig:CNN2.png} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  
+\item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four parameters: number of kernels or receptive fields $K$, size of kernel filters $F$, number of zero padding $P$ and stride $S$. Figure \ref{fig:CNNim2} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  \
+
+In general convolution layers have the following characteristics:
+\begin{itemize}
+\item Input size: \boldmath$W_1 \times H_1 \times D_1$
+\item Hyperparaemters: Number of filters \boldmath$K$, filter size \boldmath$F$, stride \boldmath$S$ and zero padding \boldmath$P$.  
+\item Output size: \boldmath$W_2 \times H_2 \times D_2$ where:
+\begin{itemize}
+\item \boldmath$W_2 = ( W_1 - F + 2P) / S + 1 $
+\item \boldmath$H_2 = ( H_1 - F + 2P) / S + 1 $
+\item \boldmath$D_2 = K $
+\end{itemize}
+\end{itemize}
+
+A common setting to preserve original input size is $K =3$, $S =3$ and $P =3$ 
+
+\item \textbf{Pooling layer} commonly used for classification purposes. Its main function is to reduce the spatial size, doing that allows to reduce the complexity of the network. In our experiments we do not make use of it. \
+
+\item \textbf{Fully connected layer} is completely connected to all neurons in the previous layer, as in a regular neural network. As with pooling layers we do not make use of it. 
+
+\item \textbf{Activation function} normally refers to linear rectifier function ReLu \ref{eq:Relu}. It is explicitlly given as another layer in the network and allows for efficient gradient propragation and its computation is easier than other activation functions like sigmoid \ref{eq:sigmoid} or tahnh \ref{eq:tanh}.
+
 \end{itemize}
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{CNN1.png} 
 \caption[Fully connected network VS CNN]{\textbf{Left:} Fully connected network with 2 hidden layers. \textbf{Right} 3D (width, height, depth) arrangement of neurons. Each layer of the CNN carries out a 3D transformation on each channel (RGB in case of images). }
 \label{fig:CNNim1} 
+\end{figure}
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{CNN2.png} 
+\caption[Convolution layer]{Visualization of a convolution layer in a 3D input with parameters Initial input volume $5 \times 5$, $K=2$, $F=3$, $S=2$ and $P=1$.}
+\label{fig:CNNim2} 
 \end{figure}
 
