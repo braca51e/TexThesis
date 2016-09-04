@@ -62,47 +62,79 @@ Deep-learning techniques learn multiple level representations, realized by simpl
 
 Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}.          
 \subsection{Neural Networks}
-Neural networks (NN's), in the filed of machine learning, are a mathematical attempt to approximate and stimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's but, they have found effective and active usage until recent years. There are three major concepts concerning NN's, network architecture, activation function and network training.
+Neural networks (NN's), in the field of machine learning, are a mathematical attempt to approximate and estimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's but, they have found effective and active usage during recent years. There are three major concepts concerning NN's that one has to deal with to make use of them:  network architecture, activation function and network training.
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{NN1.png} 
-\caption[Neural network example architecture]{A neural network takes $x_D$ inputs and gives $y_K$ outputs. Hidden units refers the the number of layers between the input and output layers, the term deep comes when the number of layers and its size grows larger. Most commonly $\omega_{MD}^{(i)}$ is represented as the weight parameter.}
+\caption[Neural network example architecture]{A neural network takes $x_D$ inputs and gives $y_K$ outputs. Another important term is the number of hidden units which refers to the number of layers between the input and output layers. The term deep comes when the number of layers and its size grows larger. Most commonly $\omega_{MD}^{(i)}$ is represented as the weight parameter.}
 \label{fig:NNim1} 
 \end{figure} 
 \begin{itemize}
-\item \textbf{Network architecture} describes the number of parameters that build the network, the number of hidden layers and input and output size. Figure \ref{fig:NNim1} shows a node-like generalization of a  fully connected network architecture, how the information flows and the parameters $\omega$ the are learned during training.  
-\item \textbf{Activation function} specifies the output of each hidden node in the network according to a given input. It is commonly referred to as nonlinearity because of the nature of the functions being used. Most popular functions are sigmoid eq. \ref{eq:sigmoid}, tanh eq. \ref{eq:tanh} and more recently linear rectifier (ReLu) eq.\ref{eq:Relu} \cite{glorot2011deep}. It also exposes a direct dependency with weight parameters $\omega$. 
-\begin{equation} \label{eq:sigmoid}
-\hspace{3em} \hspace{3em} \hspace{3em} \sigma (x) = \frac{1}{1+e^{(-x)}} \enspace \enspace \hspace{3em}
-\end{equation} 
+\item \textbf{Network architecture} describes the number of parameters that build the network, the number of hidden layers and input and output size. Figure \ref{fig:NNim1} shows a node-like generalization of a  fully connected network architecture, how the information flows and the parameters $\omega$ are learned during training.    
+
+\item \textbf{Activation function} specifies the output of each hidden node in the network according to a given input. It is commonly referred to as nonlinearity because of the nature of the functions being used. Most popular functions are sigmoid eq. \ref{plot:sigmoid}, tanh eq. \ref{eq:tanh} and more recently linear rectifier (ReLu) eq.\ref{eq:Relu} \cite{glorot2011deep}. It also exposes a direct dependency with weight parameters $\omega$. 
+%\begin{equation} \label{eq:sigmoid}
+%\hspace{3em} \hspace{3em} \hspace{3em} \sigma (x) = \frac{1}{1+e^{(-x)}} \enspace \enspace \hspace{3em}
+%\end{equation} 
 \begin{equation} \label{eq:tanh}
 \hspace{3em} \hspace{3em} \hspace{3em} f (x) = \frac{2}{1+e^{(-2x)}}-1 \enspace \enspace \hspace{3em}
 \end{equation} 
 \begin{equation} \label{eq:Relu}
 \hspace{3em} \hspace{3em} f (x) = \begin{cases} 0 & \text{for } x < 0 \\ x & \text{for } x \geqslant 0    \end{cases} \hspace{3em} or \hspace{3em} f (x) = \max (0,x) \hspace{3em}
 \end{equation} 
+
+\begin{center}
+\begin{tikzpicture}  
+\begin{axis}[
+   title={Sigmoid function},
+    axis lines = center,
+    legend pos=north west,
+    xmin=-5, xmax=5,
+    ymin=0, ymax=1,
+    xtick={-5,-3,-1,0,1,3,5},
+    xlabel = $x$,
+    ylabel = {$ \sigma ( x )$},
+]
+%Below the red parabola is defined
+\addplot [
+    domain=-5:5, 
+    samples=200, 
+    color=red,
+]
+{(1)/(1+e^((-x)))}; 
+\addlegendentry{$\frac{1}{1+e^{(-x)}}$}
+\addlegendimage{empty legend}  \label{plot:sigmoid}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+
 \item \textbf{Network training} is the process for learning the values of parameters $\omega$ of the network. The simplest way to solve the problem is by minimizing an error function, for example least square error. That is achieved from a set of input vectors $x_n$, for $n = 1,...,N$, along with target vectors $y_n$. Using optimization theory we try to minimize 
 \begin{equation} \label{eq:LS1}
 \hspace{3em} \hspace{3em} \hspace{3em} E (w) = \frac{1}{2} \sum\limits_{n=1}^N \Vert f(x_n,w) - y_n\Vert^2 \enspace \enspace \hspace{3em}
 \end{equation} 
-thereby obtaining the optimum values for $\omega$. The actual minimization makes uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network. Chain rule, forward pass and backpropagation in the context of NN's are respectively depicted in Figures \ref{fig:CRim1}, \ref{fig:FPim1}, \ref{fig:BPim1}.   
+thereby obtaining the optimum values for $\omega$. The actual minimization step uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network. Chain rule, forward pass and backpropagation in the context of NN's are respectively depicted in Figures \ref{fig:CRim1}, \ref{fig:FPim1}, \ref{fig:BPim1}.   
+
+\item \textbf{Chain rule} is the process 
+
+\item \textbf{Backpropagation} is the minimization step along with stochastic gradients descent. First, a forward past is carried out through the network producing an approximation of the desire input. Then difference (error) between the ground  truth and the prediction (output) are computed with respect to a predefined loss function. Afterwards, the forward pass is done. It calculates the gradient of the loss function with the   
 
 \end{itemize} 
 \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.9]{CR1.png} 
+\includegraphics[scale=1.1]{CR1.png} 
 \caption[Chain rule in neural networks]{Chain rule computation in the network.}
 \label{fig:CRim1} 
 \end{figure}
 \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.6]{FP1.png} 
+\includegraphics[scale=0.7]{FP1.png} 
 \caption[Forward pass to compute error]{Forward pass is used to compute the error using the current values of weight patameters.}
 \label{fig:FPim1} 
 \end{figure}
 \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.6]{BP1.png} 
+\includegraphics[scale=0.7]{BP1.png} 
 \caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated through the network updating $\omega$ parameters accordingly.}
 \label{fig:BPim1} 
 \end{figure} 	
@@ -122,14 +154,14 @@ In general convolution layers have the following characteristics:
 \item Input size: \boldmath$W_1 \times H_1 \times D_1$
 \item Hyperparaemters: Number of filters \boldmath$K$, filter size \boldmath$F$, stride \boldmath$S$ and zero padding \boldmath$P$.  
 \item Output size: \boldmath$W_2 \times H_2 \times D_2$ where:
-\begin{itemize}
+\begin{itemize} \label{sec:outCNN}
 \item \boldmath$W_2 = ( W_1 - F + 2P) / S + 1 $
 \item \boldmath$H_2 = ( H_1 - F + 2P) / S + 1 $
 \item \boldmath$D_2 = K $
 \end{itemize}
 \end{itemize}
 
-A common setting to preserve original input size is $K =3$, $S =3$ and $P =3$ 
+Sometimes it is necessary to preserve the original sizes of height and width, like in our case, a common setting to achieve that is by using these settings: $K =3$, $S =3$ and $P =3$.   
 
 \item \textbf{Pooling layer} commonly used for classification purposes. Its main function is to reduce the spatial size, doing that allows to reduce the complexity of the network. In our experiments we do not make use of it. \
 
@@ -146,7 +178,7 @@ A common setting to preserve original input size is $K =3$, $S =3$ and $P =3$
 \end{figure}
 \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.6]{CNN2.png} 
+\includegraphics[scale=0.7]{CNN2.png} 
 \caption[Convolution layer]{Visualization of a convolution layer in a 3D input with parameters Initial input volume $5 \times 5$, $K=2$, $F=3$, $S=2$ and $P=1$.}
 \label{fig:CNNim2} 
 \end{figure}
