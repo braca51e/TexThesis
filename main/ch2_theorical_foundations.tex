@@ -58,11 +58,20 @@ In this thesis we do not aim to find an iterative solution for the afore mention
 \section{Deep Learning}
 Deep learning is a modern field of machine learning that makes used of deep neural networks in order to learn representations of data with several layers of abstraction. It has been an active research topic during recent years because they have acchieved state-of-the-art results in image processing, video, speech and audio applications. It also solves the inability of tradicional machine-learning methods to process plain raw data. Moreover, there is no need to have extensive exprience in order to engineer features that transform data into useful representations or feature vectors that will ultimately allow the learning algorithm detect or classify the data. \
 
-Deep-learning techniques learn multiple level representations, realized by simple but non-linear entities transforming the representation level by level into a higher and more abstract one. By stacking a sufficiente number of such layers and by implementing a learning process, highly complex functions can be learned and accurately approximated. The main singulariy of such layers is that the features are learned without direct human intervention rather, they are learned directly from the data.   \   
+Deep-learning techniques, whether supervised or unsupervised, learn multiple level representations. Such representation are realized by simple but non-linear entities transforming the representation level by level into a higher and more abstract one. By stacking a sufficiente number of such layers and by implementing a learning process, highly complex functions can be learned and accurately approximated. The main singulariy of such layers is that the features are learned without much human intervention, that is clever engineering from a person with very specialized knowledge. Rather, those features are learned directly from the data.   \   
 
-Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}.          
-\subsection{Neural Networks}
-Neural networks (NN's), in the field of machine learning, are a mathematical attempt to approximate and estimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's but, they have found effective and active usage during recent years. There are three major concepts concerning NN's that one has to deal with to make use of them:  network architecture, activation function and network training.
+Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}.  
+
+\subsection{Supervised learning} \label{sec:superv}
+Supervised machine learnings algorithms are trained using data composed of a group of inputs $\mathbf{x}$ and an analogous label $\mathbf{y}$. The main reason for this learnign approach is to produce the most accurate mapping $f : \mathbf{x} \mapsto \mathbf{y} $ that is used to reproduce more labels. Examples for this kind of task are: classifying hand-written digits. Normally, we have a set of given hand-written numbers paired with the correct discrete class and we would like to train a model so that in the future we receive more hand-written digits and hopefully they will be correctly classified. On the other hand, we have a set of compressed measurements and its respective original images. In this case, we have a regression problem and our model will be trained so that new compressed measurements are fed into it and successful images are reconstructed.   
+
+\subsection{Unsupervised learning} \label{sec:unsuperv}
+Unlike supervised learning unsupervised learning is not given an explicit label $\mathbf{y}$. That means, the learning algorithm only has access to the input  $\mathbf{x}$ as the training data. The applications of unsupervised learning are: clustering, that is finding similarities on the data for a particular number of groups. Densiti stimation, which aims to discover a distribution explaining the input data. Finally, it is used to reduce the dimmensionality of the input into a lower one that reatins as much information as possible. \
+
+In our case, we use the unsupervised approach to both learn a sensin matrix $\Phi$ and  reconstruct the image back to its original size from those measurement. 
+        
+\subsection{Neural Networks} \label{sec:NNs}
+Neural networks (NN's), in the field of machine learning, are a mathematical attempt to approximate and estimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's, they have found effective and active usage during recent years. There are three major concepts concerning NN's that one has to deal with to make use of them:  network architecture, activation function and network training.
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{NN1.png} 
@@ -70,23 +79,34 @@ Neural networks (NN's), in the field of machine learning, are a mathematical att
 \label{fig:NNim1} 
 \end{figure} 
 \begin{itemize}
-\item \textbf{Network architecture} describes the number of parameters that build the network, the number of hidden layers and input and output size. Figure \ref{fig:NNim1} shows a node-like generalization of a  fully connected network architecture, how the information flows and the parameters $\omega$ are learned during training.    
+\item \textbf{Network architecture} describes the number of parameters that build the network, the number of hidden layers and input and output size. Figure \ref{fig:NNim1} shows a node-like generalization of a  fully connected network architecture. The green arrows show how the information flows. Outputs $y_K$ are parameterize as a weighted sum of a predefined non-linear function $f$, $\omega$ and a bias $b$  
+\begin{equation} \label{eq:paramNN}
+\hspace{3em} \hspace{3em} \hspace{3em} y_K = f ( \sum_{i=1}^D \omega_i x_i + b  ) \enspace \hspace{3em}
+\end{equation} 
 
-\item \textbf{Activation function} specifies the output of each hidden node in the network according to a given input. It is commonly referred to as nonlinearity because of the nature of the functions being used. Most popular functions are sigmoid eq. \ref{plot:sigmoid}, tanh eq. \ref{eq:tanh} and more recently linear rectifier (ReLu) eq.\ref{eq:Relu} \cite{glorot2011deep}. It also exposes a direct dependency with weight parameters $\omega$. 
+
+Normally, $b$ is embedded into $\omega$ as an extra dimension to simplify its training and the representation becomes  
+
+\begin{equation} \label{eq:paramNN}
+\hspace{3em} \hspace{3em} \hspace{3em} y_K = f ( \sum_{i=1}^D \omega_i x_i  ) \enspace with \enspace  \omega \in \mathbb{R}^{d+1} \enspace \hspace{3em}
+\end{equation}   
+
+\item \textbf{Activation function} specifies the output of each neuron in the network according to a given input. Such input, is the product between $\omega$ and $x$ which is subsequently transformed by a function commonly referred to as nonlinearity because of its behavior. Most popular functions are plotted in Figures  sigmoid\ref{fig:Sigfun1}, tanh \ref{fig:tanhfun1} and more recently linear rectifier (ReLu) \ref{fig:ReLu1} \cite{glorot2011deep}. 
 %\begin{equation} \label{eq:sigmoid}
 %\hspace{3em} \hspace{3em} \hspace{3em} \sigma (x) = \frac{1}{1+e^{(-x)}} \enspace \enspace \hspace{3em}
 %\end{equation} 
-\begin{equation} \label{eq:tanh}
-\hspace{3em} \hspace{3em} \hspace{3em} f (x) = \frac{2}{1+e^{(-2x)}}-1 \enspace \enspace \hspace{3em}
-\end{equation} 
-\begin{equation} \label{eq:Relu}
-\hspace{3em} \hspace{3em} f (x) = \begin{cases} 0 & \text{for } x < 0 \\ x & \text{for } x \geqslant 0    \end{cases} \hspace{3em} or \hspace{3em} f (x) = \max (0,x) \hspace{3em}
-\end{equation} 
+%\begin{equation} \label{eq:tanh}
+%\hspace{3em} \hspace{3em} \hspace{3em} f (x) = \frac{2}{1+e^{(-2x)}}-1 \enspace %\enspace \hspace{3em}
+%\end{equation} 
+%\begin{equation} \label{eq:Relu}
+%\hspace{3em} \hspace{3em} f (x) = \begin{cases} 0 & \text{for } x < 0 \\ x & \text{for } x \geqslant 0    \end{cases} \hspace{3em} or \hspace{3em} f (x) = \max %(0,x) \hspace{3em}
+%\end{equation} 
 
-\begin{center}
+\begin{figure}[tb] 
+\centering 
 \begin{tikzpicture}  
 \begin{axis}[
-   title={Sigmoid function},
+%   title={Sigmoid function},
     axis lines = center,
     legend pos=north west,
     xmin=-5, xmax=5,
@@ -94,6 +114,7 @@ Neural networks (NN's), in the field of machine learning, are a mathematical att
     xtick={-5,-3,-1,0,1,3,5},
     xlabel = $x$,
     ylabel = {$ \sigma ( x )$},
+    grid=major
 ]
 %Below the red parabola is defined
 \addplot [
@@ -103,35 +124,96 @@ Neural networks (NN's), in the field of machine learning, are a mathematical att
 ]
 {(1)/(1+e^((-x)))}; 
 \addlegendentry{$\frac{1}{1+e^{(-x)}}$}
-\addlegendimage{empty legend}  \label{plot:sigmoid}
 \end{axis}
 \end{tikzpicture}
-\end{center}
+\caption{Sigmoid function plot.}
+\label{fig:Sigfun1} 
+\end{figure}
+
+\begin{figure}[tb] 
+\centering 
+\begin{tikzpicture}  
+\begin{axis}[
+%   title={Sigmoid function},
+    axis lines = center,
+    legend pos=north west,
+    xmin=-5, xmax=5,
+    ymin=-1, ymax=1,
+    xtick={-5,-3,-1,0,1,3,5},
+    xlabel = $x$,
+    ylabel = {$ f ( x )$},
+    grid=major
+]
+%Below the red parabola is defined
+\addplot [
+    domain=-5:5, 
+    samples=200, 
+    color=red,
+]
+{tanh(x)}; 
+\addlegendentry{$\frac{2}{1+e^{(-2x)}}-1$}
+\end{axis}
+\end{tikzpicture}
+\caption{Tanh function plot.}
+\label{fig:tanhfun1} 
+\end{figure}
+
+\begin{figure}[tb] 
+\centering 
+\begin{tikzpicture}  
+\begin{axis}[
+%   title={Sigmoid function},
+    axis lines = center,
+    legend pos=north west,
+    xmin=-1, xmax=1,
+    ymin=0, ymax=1,
+    xtick={-1,-0.5,0,0.5,1},
+    xlabel = $x$,
+    ylabel = {$ f ( x )$},
+    grid=major
+]
+%Below the red parabola is defined
+\addplot [
+    domain=-1:1, 
+    samples=200, 
+    color=red,
+]
+{max(0,x)}; 
+\addlegendentry{$\max ( 0 , x)$}
+\end{axis}
+\end{tikzpicture}
+\caption{ReLu function plot.}
+\label{fig:ReLu1} 
+\end{figure}
 
 
-\item \textbf{Network training} is the process for learning the values of parameters $\omega$ of the network. The simplest way to solve the problem is by minimizing an error function, for example least square error. That is achieved from a set of input vectors $x_n$, for $n = 1,...,N$, along with target vectors $y_n$. Using optimization theory we try to minimize 
+\item \textbf{Network training} is the process for learning the values of parameters $\omega$ of the network. The simplest way to solve the problem is by minimizing an error function, for example least squares error. That is achieved from a set of input vectors $x_n$, for $n = 1,...,N$, along with target vectors $y_n$. Using optimization theory we try to minimize 
 \begin{equation} \label{eq:LS1}
 \hspace{3em} \hspace{3em} \hspace{3em} E (w) = \frac{1}{2} \sum\limits_{n=1}^N \Vert f(x_n,w) - y_n\Vert^2 \enspace \enspace \hspace{3em}
 \end{equation} 
-thereby obtaining the optimum values for $\omega$. The actual minimization step uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network. Chain rule, forward pass and backpropagation in the context of NN's are respectively depicted in Figures \ref{fig:CRim1}, \ref{fig:FPim1}, \ref{fig:BPim1}.   
+thereby obtaining the optimum values for $\omega$. The actual minimization step uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network.  
 
-\item \textbf{Chain rule} is the process 
+\item \textbf{Chain rule} is a mathematicah formula allowing to compute the gradient of a function with respect to another function. It is of importance for NN's because it helps find the derivative of the error between input and the output, which is necessary to carry out backpropagation. Figure \ref{fig:CRim1} shows how the  gradient is computed through the network.
 
-\item \textbf{Backpropagation} is the minimization step along with stochastic gradients descent. First, a forward past is carried out through the network producing an approximation of the desire input. Then difference (error) between the ground  truth and the prediction (output) are computed with respect to a predefined loss function. Afterwards, the forward pass is done. It calculates the gradient of the loss function with the   
-
-\end{itemize} 
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=1.1]{CR1.png} 
 \caption[Chain rule in neural networks]{Chain rule computation in the network.}
 \label{fig:CRim1} 
 \end{figure}
+
+\item \textbf{Forward pass} is the process of taking the desire input and transforming it acccording to the current network parameters. The output is then compared with a desired output to get the error. Figure \ref{fig:FPim1} provides a graphical representation. 
+
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.7]{FP1.png} 
 \caption[Forward pass to compute error]{Forward pass is used to compute the error using the current values of weight patameters.}
 \label{fig:FPim1} 
 \end{figure}
+
+\item \textbf{Backpropagation} is the minimization step along with stochastic gradients descent. First, a forward past is carried out through the network producing an approximation of the desire input. Then difference (error) between the ground  truth and the prediction (output) are computed with respect to a predefined loss function. Afterwards, the forward pass is done. It calculates the gradient of the loss function with the   
+\ref{fig:BPim1}
+
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.7]{BP1.png} 
@@ -139,15 +221,52 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \label{fig:BPim1} 
 \end{figure} 	
 
+\item \textbf{Stochastic gradient descent (SGD)} is used to find the minimum of a the loss function by iterations. It is specially suited for problems that deal with large amounts of data because is computationally effifient and relatively easy to implement. Algorithm \ref{SDGalg} shows how it is implemented. In practice, one problem is to find a good learning rate $\alpha$. As aresult, many algorithms try to adapt the learning on the go to avoid overshooting and allow for faster convergence.  
+
+\begin{algorithm}
+\caption{Stochastic Gradient Descen (SDG)}
+\label{SDGalg}
+\begin{algorithmic}[1]
+    \Require  Learning rate $\alpha  $ 
+    \Require $L ( \omega ) $: Loss function
+    \Require $ \omega_0 $: Initial parameter values
+    \State $t \leftarrow 0$ (Initialize timestep)
+    \While{$\omega_t$ not converged}
+        \State $t \leftarrow t+1$ 
+        \State $g_t \leftarrow \nabla_{\omega} L_t ( \omega_{t-1} )$ (Gradient of loss function) 
+        \State $\omega_t \leftarrow \omega_{t-1} - \alpha g_t $ (Update parameters)
+    \EndWhile
+    \State \Return $\omega_t $ (Resulting parameters)   
+\end{algorithmic}
+\end{algorithm}
+
+\end{itemize} 
+
+
+
 \subsection{Convolutional Neural Networks}
-Convolutional Neural Networks (CNN's/ConvNets) are a subset of the previously described neural networks. They are also build of neurons that aim to learn weight parameters $\omega$ and bias parameters $b$ by performing dot products and normally followed by one of the afore mention nonllinear functions. The main difference, however, is that CNN's assume that the input are images that are convolved through the network during the forward pass.  
+Convolutional Neural Networks (CNN's/ConvNets) are a subset of the previously described neural networks. They are also build of neurons that aim to learn weight parameters $\omega$ and bias parameters $b$ by performing dot products and normally followed by one of the afore mention nonllinear functions. The main difference, however, is that CNN's assume that the input are images that are convolved through the network during the forward pass and the number of parameters is lesser because the dot products are only computed in certain regions and not in the image as a whole.   
 
 \subsubsection{CNN architecture}
 In contrast with fully connected networks, the layers of CNN's are arranged in a 3D fashion seen as: width, height, depth. It differentiates in the sense that only a small subset of a layer connects to the one before it, thus reducing the number of neurons and encapsulating certain features in the input image as shown in  figure \ref{fig:CNNim1}. \
 
-CNN's are assembled by interconnecting three different types of layers one after another: Convolutional Layer, Pooling Layer and Fully-Connected Layer. Optionally, the output of each layer is passed through the ReLu function \ref{eq:Relu}. 
+CNN's are assembled by interconnecting three different types of layers one after another: Convolutional Layer, Pooling Layer and Fully-Connected Layer. Optionally, the output of each layer is passed through the ReLu function \ref{fig:ReLu1}. 
 \begin{itemize}
-\item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four parameters: number of kernels or receptive fields $K$, size of kernel filters $F$, number of zero padding $P$ and stride $S$. Figure \ref{fig:CNNim2} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  \
+\item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four hyperparameters: number of kernels or receptive fields $K$, size of kernel filters $F$, number of zero padding $P$ and stride $S$. Figure \ref{fig:CNNim2} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  \
+
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{CNN1.png} 
+\caption[Fully connected network VS CNN]{\textbf{Left:} Fully connected network with 2 hidden layers. \textbf{Right} 3D (width, height, depth) arrangement of neurons. Each layer of the CNN carries out a 3D transformation on each channel (RGB in case of images). }
+\label{fig:CNNim1} 
+\end{figure}
+\begin{figure}[tb] 
+\centering 
+\includegraphics[scale=0.6]{CNN2.png} 
+\caption[Convolution layer]{Example of a convolution layer in a 3D input with parameters Initial input volume $5 \times 5$, $K=2$, $F=3$, $S=2$ and $P=1$.}
+\label{fig:CNNim2} 
+\end{figure}
+
 
 In general convolution layers have the following characteristics:
 \begin{itemize}
@@ -163,23 +282,11 @@ In general convolution layers have the following characteristics:
 
 Sometimes it is necessary to preserve the original sizes of height and width, like in our case, a common setting to achieve that is by using these settings: $K =3$, $S =3$ and $P =3$.   
 
-\item \textbf{Pooling layer} commonly used for classification purposes. Its main function is to reduce the spatial size, doing that allows to reduce the complexity of the network. In our experiments we do not make use of it. \
+\item \textbf{Pooling layer} commonly used for classification purposes. Its main function is to reduce the spatial size, doing that allows to reduce the complexity of the network while maintaining information. In our experiments we do not make use of it. \
 
-\item \textbf{Fully connected layer} is completely connected to all neurons in the previous layer, as in a regular neural network. As with pooling layers we do not make use of it. 
+\item \textbf{Fully connected layer} is completely connected to all neurons in the previous layer, as in a regular neural network. It also makes networks grow lager and when used in CNN's they are commonly the last layer computing the final result for a type of classification. As with pooling layers we do not make use of it. 
 
-\item \textbf{Activation function} normally refers to linear rectifier function ReLu \ref{eq:Relu}. It is explicitlly given as another layer in the network and allows for efficient gradient propragation and its computation is easier than other activation functions like sigmoid \ref{eq:sigmoid} or tahnh \ref{eq:tanh}.
+\item \textbf{Activation function for CNN's} normally refers to a linear rectifier function ReLu \ref{fig:ReLu1}. It is explicitlly given as another layer in the network and allows for efficient gradient propragation. It is very popular because not only is its computation easier than other activation functions like sigmoid \ref{fig:Sigfun1} or tahnh \ref{fig:tanhfun1} but, it also decreases the probability for observing vanishing gradients.
 
 \end{itemize}
-\begin{figure}[tb] 
-\centering 
-\includegraphics[scale=0.6]{CNN1.png} 
-\caption[Fully connected network VS CNN]{\textbf{Left:} Fully connected network with 2 hidden layers. \textbf{Right} 3D (width, height, depth) arrangement of neurons. Each layer of the CNN carries out a 3D transformation on each channel (RGB in case of images). }
-\label{fig:CNNim1} 
-\end{figure}
-\begin{figure}[tb] 
-\centering 
-\includegraphics[scale=0.7]{CNN2.png} 
-\caption[Convolution layer]{Visualization of a convolution layer in a 3D input with parameters Initial input volume $5 \times 5$, $K=2$, $F=3$, $S=2$ and $P=1$.}
-\label{fig:CNNim2} 
-\end{figure}
 
