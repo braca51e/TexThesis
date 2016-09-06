@@ -211,8 +211,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \label{fig:FPim1} 
 \end{figure}
 
-\item \textbf{Backpropagation} is the minimization step along with stochastic gradients descent. First, a forward past is carried out through the network producing an approximation of the desire input. Then difference (error) between the ground  truth and the prediction (output) are computed with respect to a predefined loss function. Afterwards, the forward pass is done. It calculates the gradient of the loss function with the   
-\ref{fig:BPim1}
+\item \textbf{Backpropagation} is the minimization step of the loss function. Once the forward pass is carried out and the error is ontanined the loss-gradient is recursively computed with respect to the given input. Afterwards, it is propagated backwards and the weights of each neuron are updated. Figure \ref{fig:BPim1} depicts the process. Forwards pass, error computation, loss gradient and backwardpropagation is called epoch and compresses each indivual process
 
 \begin{figure}[tb] 
 \centering 
@@ -221,7 +220,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \label{fig:BPim1} 
 \end{figure} 	
 
-\item \textbf{Stochastic gradient descent (SGD)} is used to find the minimum of a the loss function by iterations. It is specially suited for problems that deal with large amounts of data because is computationally effifient and relatively easy to implement. Algorithm \ref{SDGalg} shows how it is implemented. In practice, one problem is to find a good learning rate $\alpha$. As aresult, many algorithms try to adapt the learning on the go to avoid overshooting and allow for faster convergence.  
+\item \textbf{Stochastic gradient descent (SGD)} is used to find the minimum of a the loss function by iterating over each input example. Because of that, if the training examples are very large only one iteration would take a long time which would make the process slow. As a result, SGD is not scalable and limits its application to small datasets. Algorithm \ref{SDGalg} shows a generalization of how it is implemented. Another practical difficulty is to find a good learning rate $\alpha$. As aresult, many algorithms try to adapt the learning on the go to avoid overshooting and allow for faster convergence.  
 
 \begin{algorithm}
 \caption{Stochastic Gradient Descen (SDG)}
@@ -239,6 +238,8 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
     \State \Return $\omega_t $ (Resulting parameters)   
 \end{algorithmic}
 \end{algorithm}
+
+\item \textbf{Mini-batch Stochastic gradient descent (SGD)} is the most commonly used algorithm for large neural networks because it overcomes the limitation of SGD for big datasets. Unlike SDG, it starts moving towards the minimum by just evaluating a small number of samples and updating the parameters accordingly. That is, not all training examples are used before $\omega$ values are changed. It introduces a new hyperparameter for the training specifiying the number $m$ of samples to be used during each iteration and it is referred to as batch size.        
 
 \end{itemize} 
 

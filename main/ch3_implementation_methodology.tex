@@ -117,7 +117,7 @@ Based on the previous concepts and proved capabilities of the alpha network we p
 \end{figure}
 
 \section{Training CNN's}
-Training is the process of learning the values of the parameters of the networks. During this step one is concerned with choosing an appropriate weight initialization, loss function and parameter update rule.
+Training is the process of learning the values of the parameters of the networks. During this step one is concerned with choosing an appropriate weight initialization, loss function, parameter update rule and batch size.
 
 \subsection{Weight initialization}
 Choosing the right initial values of the network is paramount to secure a sucessful convergence. Furthermore, it can avoid problems like vanishing gradients or ending up being stuck in local minima. Using independent Gaussian random numbers is a very common practice for simple networks but, as complexity increases smarter ways had been investigated \cite{glorot2010understanding}. Glorot and Bengio empirically validated a method to initialize the weights called normalized initialization 
@@ -164,9 +164,8 @@ It works by storing the weighted decay of the previous square gradient $v_t$ and
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Mini-batch training}  
-
-
+\subsection{Batch size training}  
+For training our CNN's and results presented later we have used a batch size of 20. 
 
 
 \section{Postprocessing of reconstructed images}
