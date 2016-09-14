@@ -143,7 +143,7 @@ It works by storing the weighted decay of the previous square gradient $v_t$ and
 \label{Adamalg}
 \begin{algorithmic}[2]
     \Require $\alpha = 0.0005 $: Stepsize, $\epsilon = 10^{-8}$ 
-    \Require $\beta_1 = 0.9$, $\beta_2 = 0.999$: Exponential decay rats for moment stimates
+    \Require $\beta_1 = 0.9$, $\beta_2 = 0.999$: Exponential decay rats for moment estimates
     \Require $L ( \omega ) $: Loss function
     \Require $ \omega_0 $: Initial parameter values
     \State $m_0 \leftarrow 0$ (Initialize $1^{st}$ moment vector)
@@ -151,9 +151,9 @@ It works by storing the weighted decay of the previous square gradient $v_t$ and
     \State $t \leftarrow 0$ (Initialize timestep)
     \While{$\omega_t$ not converged}
         \State $t \leftarrow t+1$ 
-        \State $g_t \leftarrow \nabla_{\omega} L_t ( \omega_{t-1} )$ (Gradient of loss function at timestep $t$)
-        \State $m_t \leftarrow \beta_1 \cdot m_{t-1} + ( 1 -  \beta_1) \cdot g_t $ (Update biased first moment stimate)
-        \State $v_t \leftarrow \beta_2 \cdot v_{t-1} + (1 - \beta_2) \cdot g_{t}^2 $ (Update biased second moment stimate)
+        \State $g_t \leftarrow \nabla_{\omega} L_t ( \omega_{t-1} )$ (Gradient of loss function at time step $t$)
+        \State $m_t \leftarrow \beta_1 \cdot m_{t-1} + ( 1 -  \beta_1) \cdot g_t $ (Update biased first moment estimate)
+        \State $v_t \leftarrow \beta_2 \cdot v_{t-1} + (1 - \beta_2) \cdot g_{t}^2 $ (Update biased second moment estimate)
         \State $\hat{m}_t \leftarrow \frac{m_t}{( 1 - \beta_{1}^{t} )}$  (Compute bias-corrected first moment estimate)
         \State $\hat{v}_t \leftarrow \frac{m_t}{( 1 - \beta_{2}^{t} )}$  (Compute bias-corrected second moment estimate)
         \State $\omega_t \leftarrow \omega_{t-1} - \alpha \cdot \frac{ \hat{m}_t }{ ( \sqrt{\hat{v}_t } + \epsilon ) } $ (Update parameters)
@@ -210,7 +210,7 @@ variables $\mu_{I}$, $\mu_{RI}$, $\sigma_{I}$, $\sigma_{RI}$ and $\sigma_{IRI}$ 
 \begin{equation} \label{eq:ssim1}
 \hspace{3em} \hspace{3em} \hspace{3em} SSIM(I,RI)= \big[ l(I,RI)^{\alpha} \cdot c(I,RI)^{\beta} \cdot s(I,RI)^{\gamma} \big]   \enspace \enspace \hspace{3em}
 \end{equation}
-In practice $\alpha = \beta = \gamma = 1$, and $C_3 = \frac{C_2}{2}$ simplying to
+In practice $\alpha = \beta = \gamma = 1$, and $C_3 = \frac{C_2}{2}$ simplifying to
 \begin{equation} \label{eq:ssim2}
 \hspace{3em} \hspace{3em} \hspace{3em} SSIM(I,RI)= \frac{(2\mu_{I} \mu_{RI} + C_1)(2\sigma_{IRI}+C_2)}{(\mu_{I}^2 + \mu_{RI}^2 + C_1)(\sigma_{I}^2 \sigma_{RI}^2 + C_2)}   \enspace \enspace \hspace{3em}
 \end{equation}
