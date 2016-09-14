@@ -1,11 +1,11 @@
-\chapter{Theorical foundations}
-In this chapter we will explain the necessary background that is used throughout the thesis. In the following we will introduce the theoretical foundations of compressed sensing and some of the problems one faces when dealing with it. Deep Learning will also be intriudced along with convolutional neural networks which will be discussed in more detail.  
+\chapter{Theoretical foundations}
+In this chapter we will explain the necessary background that is used throughout the thesis. In the following we will introduce the theoretical foundations of compressed sensing and some of the problems when dealing with it. Deep Learning will also be introduced along with convolutional neural networks which will be discussed in more detail.  
 
 \section{Compressed Sensing}
 
 Compressed sensing is mathematical theory that deals with the problem of recovering a signal from a small number of measurements, the number of measurements is less than the minimum number of samples defined by Shanon-Nyquist theorem (sampling acquisition must be done at least twice the highest frequency in the signal). For many applications, imaging and video, the sampling rate specified by Nyquist might end up being very large that the amount of samples that have to be compressed and transmitted increases the complexity of the system and makes it costly. Compressed sensing contradicts the previous statements since it claims that a signal may be recovered with lesser samples or measurements than conventional approaches. That is possible because it proposes a generalization of a linear mapping paired with optimization in order do the sampling and recovery process at notably inferior rates than that imposed by Nyquist rate. \
 
-Compressed sensing heavily relies on two principles: sparsity of the signal, and incoherence, which refers to sampling/sensing representation, both terms will be further discussed. In addition to that, CS tries to overcome two of the major incapabilities of sample-compress schemes: First, the number of samples or measurements is considerably reduced. Second, the compression stage occurs inside the sensor (hardware) therefore, there is no need to add extra encoding computation.
+Compressed sensing heavily relies on two principles: sparsity of the signal, and incoherence, which refers to sampling/sensing representation; both terms will be further discussed. In addition to that, CS tries to overcome two of the major incapabilities of sample-compress schemes: First, the number of samples or measurements is considerably reduced. Second, the compression stage occurs inside the sensor (hardware). Therefore, there is no need to add extra encoding computation.
 
 \subsection{Sparsity of a signal}
 The mathematical formulation of sparsity is defined as follows: a signal $\mathbf{x \in R^N}$ (for instance $n$-pixels of an image) is interpreted in terms of its basis representation as a linear combination of the orthonormal basis $\{\psi\}_{i=1}^{N}$ and coefficients $\mathbf{\alpha}$ as  
@@ -30,31 +30,30 @@ from that one can see that the product of matrices $\Phi\Psi$ has size $ M \time
 \begin{equation} \label{eq:signal3}
 \hspace{3em} \hspace{3em} \hspace{3em} \mu(\Phi,\Psi) = \max_{k,j}|<\phi_k,\psi_j>|  \hspace{3em}
 \end{equation}   
-the lower $\mu$ the more incoherent the matrices are and therefore it is more probable the successful reconstruction of the original signal.
+the lower $\mu$ the more incoherent the matrices are and therefore the successful reconstruction of the original signal is more probable.
 
 \subsection{Sensing Matrix and RIP}
-The sensing matrix $\Phi$ should be chosen so that the number $M$ of its rows is bigger than the number of nonzeros entries in the sparce signal $K$, that is $M \geq K$. Due to the fact that defining a number $K$ for natural signals is unknown, a constraint commonly referred as $restricted \enspace isometry \enspace property$ (RIP) \cite{candes2005decoding,candes2006stable,candes2008restricted} was proposed. It ensures that the matrix $\Phi$ retains the length of the k-sparse vectors and therefore the signal is not corrupted  by the transformation going from $\mathbf{x} \in R^N $ to $\mathbf{y} \in R^M $. The mathematical representation of RIP reads
+The sensing matrix $\Phi$ should be chosen so that the number $M$ of its rows is larger than the number of nonzeros entries in the sparse signal $K$, that is $M \geq K$. Due to the fact that defining a number $K$ for natural signals is unknown, a constraint commonly referred as $restricted \enspace isometry \enspace property$ (RIP) \cite{candes2005decoding,candes2006stable,candes2008restricted} was proposed. It ensures that the matrix $\Phi$ retains the length of the k-sparse vectors and therefore the signal is not corrupted  by the transformation going from $\mathbf{x} \in R^N $ to $\mathbf{y} \in R^M $. The mathematical representation of RIP reads
 \begin{equation} \label{eq:rip1}
 \hspace{3em} \hspace{3em} \hspace{3em} (1-\delta_k)\Vert x \Vert_{l_2}^2 \leq \Vert \Phi x \Vert_{l_2}^2 \leq (1+\delta_k)\Vert x \Vert_{l_2}^2  \hspace{3em}
 \end{equation}  
 where $\delta_k$, referred to as $restricted \enspace isometry \enspace constant$, is the smallest number preserving the inequality for the matrix $\Phi$. \
 
-Designing optimal sensing matrices goes beyond the scope of this thesis and because the RIP and incoherence may be obtained with high probability by taking $\Phi$ as a random Gaussian matrix with independent and identically (iid) distributed elements\cite{candes2005signal} we will not devote more time for this topic. Particularly, we will use an iid Gaussian sensing matrix throughout the thesis unless otherwise specified.         
+Designing optimal sensing matrices goes beyond the scope of this thesis since the RIP and incoherence may be obtained with high probability by taking $\Phi$ as a random Gaussian matrix with independent and identically (iid) distributed elements\cite{candes2005signal} we will not devote more time for this topic. Particularly, we will use an iid Gaussian sensing matrix throughout the thesis unless otherwise specified.         
 
 \subsection{Signal Recovery}
-Even though RIP \ref{eq:rip1} and incoherence theoretically ensure that a K-sparse signal might be entirely described with only $M$ measurements, it is still needed to restore the original signal $\mathbf{x}$. A great deal of algorithms alredy existing accomplish the recontruction process by reading the measurements $\mathbf{x}$, the matrix  $\Phi$ and solving an optimization problem. Concretely, most recovery algorithms try to find the best approximation $\hat{x} = \Psi x$ for some transform basis $\Psi$. It has been proved \cite{candes2006near,Donoho01} that the optimal solution for that problem is getting $\hat{x}$ with the smallest $l_0$ norm from measurements $y$ given by         
+Even though RIP (\ref{eq:rip1}) and incoherence theoretically ensure that a K-sparse signal can be entirely described with only $M$ measurements, it is still necessary to restore the original signal $\mathbf{x}$. A great deal of algorithms alredy existing accomplish the recontruction process by reading the measurements $\mathbf{x}$, the matrix  $\Phi$ and solving an optimization problem. Concretely, most recovery algorithms try to find the best approximation $\hat{x} = \Psi x$ for some transform basis $\Psi$. It has been proved \cite{candes2006near,Donoho01} that the optimal solution for that problem is $\hat{x}$ with the smallest $l_0$ norm from measurements $y$ given by         
 \begin{equation} \label{eq:minl0}
 \hspace{3em} \hspace{3em} \hspace{3em} \hat{x} = arg \min_{x} \Vert \Psi x \Vert_0 \hspace{3em} s.t. \enspace \enspace y = \Phi x     \hspace{3em}
 \end{equation}     
-Nevertheless, the solution for \ref{eq:minl0} is an NP-hard that becomes numerically unstable and requires comprehensive computation. As a result, a convex relaxation was introduced and instead the $l_1$ norm is used reducing the problem to a linear program  of the form 
+Nevertheless, the solution for \ref{eq:minl0} is NP-hard optimization problem that becomes numerically unstable and requires comprehensive computation. As a result, a convex relaxation was introduced and the $l_1$ norm is used instead reducing the problem to a linear program  of the form 
 \begin{equation} \label{eq:minl1}
 \hspace{3em} \hspace{3em} \hspace{3em} \hat{x} = arg \min_{x} \Vert \Psi x \Vert_1 \hspace{3em} s.t. \enspace \enspace y = \Phi x     \hspace{3em}
 \end{equation}
-this holds true because measurements $\mathbf{y}$ were taken using an iid Gausian sensing matrix and therefore a sucessful reconstruction is highly probable to occur \cite{Donoho01,candes2006robust}. Algorithms trying to solve this problem are dubbed iterative given the nature of convex optimization. Among state-of-the-art iterative algorithms one can find \cite{dong2014compressive,li2013efficient,metzler2014denoising} and they are used as a baseline to compare our results.  \
+This holds true because measurements $\mathbf{y}$ were taken using an iid Gausian sensing matrix and therefore a sucessful reconstruction is highly probable to occur \cite{Donoho01,candes2006robust}. Algorithms trying to solve this problem are dubbed iterative given the nature of convex optimization. Among state-of-the-art iterative algorithms one can find \cite{dong2014compressive,li2013efficient,metzler2014denoising} and they are used as a baseline to compare our results.  \
 
 In this thesis we do not aim to find an iterative solution for the aforementioned optimization problem in equation \ref{eq:minl1}, instead we explore the promising capabilities of using deep learning for image processing tasks.
 
-   
 \section{Deep Learning}
 Deep learning is a modern field of machine learning that makes used of deep neural networks in order to learn representations of data with several layers of abstraction. It has been an active research topic during recent years because they have achieved state-of-the-art results in image processing, video, speech and audio applications. It also solves the inability of traditional machine-learning methods to process plain raw data. Moreover, there is no need to have extensive experience in order to engineer features that transform data into useful representations or feature vectors that will ultimately allow the learning algorithm detect or classify the data. \
 
@@ -66,16 +65,16 @@ Because deep learning has proved to be effective in overcoming difficulties that
 Supervised machine learning algorithms are trained using data composed of a group of inputs $\mathbf{x}$ and an analogous label $\mathbf{y}$. The main reason for this learning approach is to produce the most accurate mapping $f : \mathbf{x} \mapsto \mathbf{y} $ that is used to reproduce more labels. Examples for this kind of task are: classifying hand-written digits. Normally, we have a set of given hand-written numbers paired with the correct discrete class and we would like to train a model so that in the future we receive more hand-written digits and hopefully they will be correctly classified. On the other hand, we have a set of compressed measurements and its respective original images. In this case, we have a regression problem and our model will be trained so that new compressed measurements are fed into it and successful images are reconstructed.   
 
 \subsection{Unsupervised learning} \label{sec:unsuperv}
-Unlike supervised learning unsupervised learning is not given an explicit label $\mathbf{y}$. That means, the learning algorithm only has access to the input  $\mathbf{x}$ as the training data. The applications of unsupervised learning are: clustering, that is finding similarities on the data for a particular number of groups. Density estimation, which aims to discover a distribution explaining the input data. Finally, it is used to reduce the dimensionality of the input into a lower one that retains as much information as possible. \
+Unlike supervised learning unsupervised learning is not given an explicit label $\mathbf{y}$. That means, the learning algorithm only has access to the input  $\mathbf{x}$ as the training data. The applications of unsupervised learning are: clustering, that is finding similarities on the data for a particular number of groups; density estimation, which aims to discover a distribution explaining the input data. Finally, unsupervised learning used to reduce the dimensionality of the input into a lower one that retains as much information as possible. \
 
-In our case, we use the unsupervised approach to both learn a sensing matrix $\Phi$ and  reconstruct the image back to its original size from those measurement. 
+In our case, we use the unsupervised approach to both learn a sensing matrix $\Phi$ and  reconstruct the image back to its original size from these measurement. 
         
 \subsection{Neural Networks} \label{sec:NNs}
 Neural networks (NN's), in the field of machine learning, are a mathematical attempt to approximate and estimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's, they have found effective and active usage during recent years. There are three major concepts concerning NN's that one has to deal with to make use of them:  network architecture, activation function and network training.
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.6]{NN1.png} 
-\caption[Neural network example architecture]{A neural network takes $x_D$ inputs and gives $y_K$ outputs. Another important term is the number of hidden units which refers to the number of layers between the input and output layers. The term deep comes when the number of layers and its size grows larger. Most commonly $\omega_{MD}^{(i)}$ is represented as the weight parameter.}
+\caption[Neural network example architecture]{A neural network takes $x_D$ inputs and gives $y_K$ outputs. Another important term is the number of hidden units which refers to the number of layers between the input and output layers. The term deep comes when the number of layers and its size grows larger. Most commonly $\omega_{MD}^{(i)}$ are called the weight parameters.}
 \label{fig:NNim1} 
 \end{figure} 
 \begin{itemize}
@@ -202,7 +201,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \label{fig:CRim1} 
 \end{figure}
 
-\item \textbf{Forward pass} is the process of taking the desire input and transforming it according to the current network parameters. The output is then compared with a desired target to get the error. Figure \ref{fig:FPim1} provides a graphical representation. 
+\item \textbf{Forward pass} is the process of taking the desired input and transforming it according to the current network parameters. The output is then compared with a desired target to obtain the error. Figure \ref{fig:FPim1} provides a graphical representation. 
 
 \begin{figure}[tb] 
 \centering 
@@ -211,7 +210,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \label{fig:FPim1} 
 \end{figure}
 
-\item \textbf{Backpropagation} is a technique that permits NN's learn function approximations. Once the forward pass is carried out, the error is obtained using as the evaluation metric the loss function. Afterwards,  the gradient of the loss function with respect to the given input is recursively propagated through the network. The weights $\omega$ are updated by moving in the towards the minimum of the loss function. Figure \ref{fig:BPim1} depicts the process. The process of completing a forwards pass, error computation, loss gradient and backpropagation over all training examples is called epoch. 
+\item \textbf{Backpropagation} is a technique that permits NN's to learn function approximations. Once the forward pass is carried out, the error is obtained evaluating loss function. Afterwards,  the gradient of the loss function with respect to the given input is recursively propagated through the network. The weights $\omega$ are updated by moving towards the minimum of the loss function. Figure \ref{fig:BPim1} depicts the process. The process of completing a forwards pass, error computation, loss gradient and backpropagation over all training examples is called epoch. 
 
 \begin{figure}[tb] 
 \centering 
@@ -219,6 +218,8 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated through the network updating $\omega$ parameters accordingly.}
 \label{fig:BPim1} 
 \end{figure} 	
+
+\item \textbf{Gradient Descent (GD)} explain it!
 
 \item \textbf{Stochastic gradient descent (SGD)} is used to find the minimum of a the loss function by iterating over each input example. Because of that, if the training examples are very large only one iteration would take a long time which would make the process slow. As a result, SGD is not scalable and limits its application to small datasets. Algorithm \ref{SDGalg} shows a generalization of how it is implemented. Another practical difficulty is to find a good learning rate $\alpha$. As a result, many algorithms try to adapt the learning on the go to avoid overshooting and allow for faster convergence.  
 
