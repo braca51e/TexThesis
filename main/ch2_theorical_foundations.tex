@@ -192,6 +192,8 @@ Normally, $b$ is embedded into $\omega$ as an extra dimension to simplify its tr
 \end{equation} 
 thereby obtaining the optimum values for $\omega$. The actual minimization step uses of an algorithm called backpropagation, which is a method that computes the gradients by recursively applying chain rule. The error is computed by doing a forward pass in the network.  
 
+\item \textbf{Weight Initialiyation} in order to carry out the training process parameter values must have an initial value. Such value is, normally, assigned  randomly and does not affect the final outcome.
+
 \item \textbf{Chain rule} is a mathematical formula allowing to compute the gradient of a function with respect to another function. It is of importance for NN's because it helps find the derivative of the error between input and the output. Figure \ref{fig:CRim1} shows how the  gradient is computed through the network.
 
 \begin{figure}[tb] 
@@ -206,7 +208,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \begin{figure}[tb] 
 \centering 
 \includegraphics[scale=0.7]{FP1.png} 
-\caption[Forward pass to compute error]{Forward pass is used to compute the predictions using the current values of weight patameters.}
+\caption[Forward pass to compute error]{Forward pass is used to compute the predictions using the current values of weight parameters.}
 \label{fig:FPim1} 
 \end{figure}
 
@@ -219,42 +221,73 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 \label{fig:BPim1} 
 \end{figure} 	
 
-\item \textbf{Gradient Descent (GD)} explain it!
-
-\item \textbf{Stochastic gradient descent (SGD)} is used to find the minimum of a the loss function by iterating over each input example. Because of that, if the training examples are very large only one iteration would take a long time which would make the process slow. As a result, SGD is not scalable and limits its application to small datasets. Algorithm \ref{SDGalg} shows a generalization of how it is implemented. Another practical difficulty is to find a good learning rate $\alpha$. As a result, many algorithms try to adapt the learning on the go to avoid overshooting and allow for faster convergence.  
+\item \textbf{Gradient Descent (GD)} is the numeric algorithm used to find the minimum of the loss function. The gradient of the loss function is evaluated using the training examples as input, then it is multiplied by a parameter called learning rate and substracted from the current weight values. In practice, it is not implemented because it first needs to compute the gradient with respect to each training sample before doing a simple update for the weight parameters. For large datasets this approach would require agreat deal of computational effort and its speed convergence is slow. As a result, GD is not scalable and limits its application to small datasets. The process is decribed in Algorithm \ref{DGalg}.  
 
 \begin{algorithm}
-\caption{Stochastic Gradient Descen (SDG)}
-\label{SDGalg}
+\caption{Gradient Descen (GD)}
+\label{DGalg}
 \begin{algorithmic}[1]
-    \Require  Learning rate $\alpha  $ 
-    \Require $L ( \omega ) $: Loss function
-    \Require $ \omega_0 $: Initial parameter values
+    \Require Initial $ \omega_0 \in R^n $, stepsize $\alpha  $, function $\nabla_{\omega} L_t ( \omega )$, training samples $M$
     \State $t \leftarrow 0$ (Initialize timestep)
     \While{$\omega_t$ not converged}
         \State $t \leftarrow t+1$ 
-        \State $g_t \leftarrow \nabla_{\omega} L_t ( \omega_{t-1} )$ (Gradient of loss function) 
+        \State $g_t \leftarrow \frac{1}{M} \sum_{m=1}^M \nabla_{\omega} L_t ( \omega_{t-1}^{m} )$ (Gradient of loss function for each sample) 
         \State $\omega_t \leftarrow \omega_{t-1} - \alpha g_t $ (Update parameters)
     \EndWhile
     \State \Return $\omega_t $ (Resulting parameters)   
 \end{algorithmic}
 \end{algorithm}
 
-\item \textbf{Mini-batch Stochastic gradient descent (SGD)} is the most commonly used algorithm for large neural networks because it overcomes the limitation of SGD for big datasets. Unlike SDG, it starts moving towards the minimum by just evaluating a small number of samples and updating the parameters accordingly. That is, not all training examples are used before $\omega$ values are changed. It introduces a new hyperparameter for the training specifiying the number $m$ of samples to be used during each iteration and it is referred to as batch size.        
+\item \textbf{Stochastic gradient descent (SGD)} is a variation of GD that makes updates in a different way. Unlike GD, SGD makes an update of weight parameters for each sample making more efficient. That is, it moves towars the minimum with each gradient evaluation instead of doing a weighted average of gradients. Nevertheless, it requieres a certain number of iteration, normally unkonwn, and since it makes updates with each sample it is very sensitive if the data has been scaled or transformed making it inaccurate. Algorithm  \ref{SDGalg} shows a generalization of how it is implemented.
+
+\begin{algorithm}
+\caption{Stochastic Gradient Descen (SGD)}
+\label{SDGalg}
+\begin{algorithmic}[1]
+    \Require Initial $ \omega_0 \in R^n $, stepsize $\alpha  $, function $\nabla_{\omega} L_t ( \omega )$, training samples $M$
+    \State $t \leftarrow 0$ (Initialize timestep)
+    \While{$\omega_t$ not converged}
+    \State $t \leftarrow t+1$
+        \For{\texttt{$ m=1 $ to $ M $}}
+    \State $ g_t \leftarrow \alpha \nabla_{\omega} L_t ( \omega_{t-1}^{m} )$ (Gradient of loss function for each sample) 
+    \State $\omega_t \leftarrow \omega_{t-1} - \alpha g_t $ (Update parameters)
+        \EndFor
+    \EndWhile
+    \State \Return $\omega_t $ (Resulting parameters)   
+\end{algorithmic}
+\end{algorithm}
+
+\item \textbf{Mini-batch Stochastic gradient descent (SGD)} is the most commonly used algorithm for large neural networks because it overcomes the limitations of GD and SGD for big datasets. Unlike GD, it starts moving towards the minimum by just evaluating a small number of samples and updating the weight parameters accordingly. That is, not all training examples are used before $\omega$ values are changed. Dissimilar to SGD, it does not update the parameters with each training sample, rather it evaluates a smaller subset of training samples therebz increasing accuracy. That means, it introduces a new hyperparameter for the training specifiying the number $\beta$ of samples to be used during each iteration and it is referred to as batch size. Algorthm \ref{MBSDGalg} shows this approach. \\
+A practical difficulty, common to all algorithms following gradient descent approach, is to find a good learning rate $\alpha$. Since, there is no proven optimum value in literature many algorithms are implemented trying to adapt the learning rate on the go to avoid overshooting and allow for faster convergence.   
+
+\begin{algorithm}
+\caption{Mini Batch Stochastic Gradient Descen (SGD)}
+\label{MBSDGalg}
+\begin{algorithmic}[1]
+    \Require Initial $ \omega_0 \in R^n $, stepsize $\alpha  $, function $\nabla_{\omega} L_t ( \omega )$, training samples $M$, match size $\beta$
+    \State $t \leftarrow 0$ (Initialize timestep)
+    \While{$\omega_t$ not converged}
+    \State $t \leftarrow t+1$
+        \For{\texttt{$ m=1 $ to $ \frac{M}{\beta} $}}
+    \State $ g_t \leftarrow \sum_{i=1}^{\beta} \nabla_{\omega} L_t ( \omega_{t-1}^{i} )$ (Gradient of loss function for each sample) 
+    \State $\omega_t \leftarrow \omega_{t-1} - \alpha g_t $ (Update parameters)
+        \EndFor
+    \EndWhile
+    \State \Return $\omega_t $ (Resulting parameters)   
+\end{algorithmic}
+\end{algorithm}     
 
 \end{itemize} 
 
-
-
 \subsection{Convolutional Neural Networks}
-Convolutional Neural Networks (CNN's/ConvNets) are a subset of the previously described neural networks. They are also build of neurons that aim to learn weight parameters $\omega$ and bias parameters $b$ by performing dot products and normally followed by one of the afore mention nonllinear functions. The main difference, however, is that CNN's assume that the input are images that are convolved through the network during the forward pass and the number of parameters is lesser because the dot products are only computed in certain regions and not in the image as a whole.   
+Convolutional Neural Networks (CNN's/ConvNets) are a subset of the previously described neural networks. They are also built of neurons that aim to learn weight parameters $\omega$ and bias parameters $b$ by performing dot products and normally followed by one of the afore mention nonllinear functions. The main difference, however, is that CNN's assume that the input data exposes high correlation in at least one dimension, for example images, and exploits that nature. The imput data is convolved through the network during the forward pass and the number of parameters is lesser because the dot products are only computed in certain regions and not in the image as a whole.   
 
 \subsubsection{CNN architecture}
 In contrast with fully connected networks, the layers of CNN's are arranged in a 3D fashion seen as: width, height, depth. It differentiates in the sense that only a small subset of a layer connects to the one before it, thus reducing the number of neurons and encapsulating certain features in the input image as shown in  figure \ref{fig:CNNim1}. \
 
 CNN's are assembled by interconnecting three different types of layers one after another: Convolutional Layer, Pooling Layer and Fully-Connected Layer. Optionally, the output of each layer is passed through the ReLu function \ref{fig:ReLu1}. 
 \begin{itemize}
-\item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four hyperparameters: number of kernels or receptive fields $K$, size of kernel filters $F$, number of zero padding $P$ and stride $S$. Figure \ref{fig:CNNim2} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  \
+\item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four hyperparameters: number of kernels or filters $K$, size of kernel filters $F$, number of zero padding $P$ and stride $S$. Figure \ref{fig:CNNim2} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  \
 
 \begin{figure}[tb] 
 \centering 
@@ -273,7 +306,7 @@ CNN's are assembled by interconnecting three different types of layers one after
 In general convolution layers have the following characteristics:
 \begin{itemize}
 \item Input size: \boldmath$W_1 \times H_1 \times D_1$
-\item Hyperparaemters: Number of filters \boldmath$K$, filter size \boldmath$F$, stride \boldmath$S$ and zero padding \boldmath$P$.  
+\item Hyperparameters: Number of filters \boldmath$K$, filter size \boldmath$F$, stride \boldmath$S$ and zero padding \boldmath$P$.  
 \item Output size: \boldmath$W_2 \times H_2 \times D_2$ where:
 \begin{itemize} \label{sec:outCNN}
 \item \boldmath$W_2 = ( W_1 - F + 2P) / S + 1 $
@@ -284,7 +317,7 @@ In general convolution layers have the following characteristics:
 
 Sometimes it is necessary to preserve the original sizes of height and width, like in our case, a common setting to achieve that is by using these settings: $K =3$, $S =3$ and $P =3$.   
 
-\item \textbf{Pooling layer} commonly used for classification purposes. Its main function is to reduce the spatial size, doing that allows to reduce the complexity of the network while maintaining information. In our experiments we do not make use of it. \
+\item \textbf{Pooling layer} Its main function is to reduce the spatial size, doing that allows to reduce the complexity of the network while maintaining information. In our experiments we do not make use of it. \
 
 \item \textbf{Fully connected layer} is completely connected to all neurons in the previous layer, as in a regular neural network. It also makes networks grow lager and when used in CNN's they are commonly the last layer computing the final result for a type of classification. As with pooling layers we do not make use of it. 
 
