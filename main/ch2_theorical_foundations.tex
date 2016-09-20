@@ -7,6 +7,8 @@ Compressed sensing is mathematical theory that deals with the problem of recover
 
 Compressed sensing heavily relies on two principles: sparsity of the signal, and incoherence, which refers to sampling/sensing representation; both terms will be further discussed. In addition to that, CS tries to overcome two of the major incapabilities of sample-compress schemes: First, the number of samples or measurements is considerably reduced. Second, the compression stage occurs inside the sensor (hardware). Therefore, there is no need to add extra encoding computation.
 
+\FloatBarrier
+
 \subsection{Sparsity of a signal}
 The mathematical formulation of sparsity is defined as follows: a signal $\mathbf{x \in R^N}$ (for instance $n$-pixels of an image) is interpreted in terms of its basis representation as a linear combination of the orthonormal basis $\{\psi\}_{i=1}^{N}$ and coefficients $\mathbf{\alpha}$ as  
 \begin{equation} \label{eq:signal}
@@ -15,10 +17,12 @@ The mathematical formulation of sparsity is defined as follows: a signal $\mathb
 
 CS takes advantage of the certainty that plentiful natural signals are sparse or compressible when stated in a condensed representaion. For example, images are easily compressed using the discrete cosine transform (DCT) and wavelet bases \cite{mallat1999wavelet}. Namely, a signal is said to be compressible or k-sparse if there exists a convenient basis $\psi$ for which $\mathbf{x}$ is a linear combination of only $K$ basis vectors, obeying $K \ll N$. That means, only $K$ elements of $\alpha$ present in \ref{eq:signal} are nonzero. 
 
+\FloatBarrier
+
 \subsection{Incoherence}
 Measurements in CS are obtained by using a linear operator that takes $M < N$ inner products between $\mathbf{x}$ and a set of vectors $\{\phi\}_{i=1}^{M}$. \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.6]{CS1.png} 
+\includegraphics[scale=0.8]{CS1.png} 
 \caption[Compressed sensing measurement process]{Measurement process in compressed sensing.}
 \label{fig:csmea} 
 \end{figure}
@@ -32,6 +36,8 @@ from that one can see that the product of matrices $\Phi\Psi$ has size $ M \time
 \end{equation}   
 the lower $\mu$ the more incoherent the matrices are and therefore the successful reconstruction of the original signal is more probable.
 
+\FloatBarrier
+
 \subsection{Sensing Matrix and RIP}
 The sensing matrix $\Phi$ should be chosen so that the number $M$ of its rows is larger than the number of nonzeros entries in the sparse signal $K$, that is $M \geq K$. Due to the fact that defining a number $K$ for natural signals is unknown, a constraint commonly referred as $restricted \enspace isometry \enspace property$ (RIP) \cite{candes2005decoding,candes2006stable,candes2008restricted} was proposed. It ensures that the matrix $\Phi$ retains the length of the k-sparse vectors and therefore the signal is not corrupted  by the transformation going from $\mathbf{x} \in R^N $ to $\mathbf{y} \in R^M $. The mathematical representation of RIP reads
 \begin{equation} \label{eq:rip1}
@@ -39,7 +45,9 @@ The sensing matrix $\Phi$ should be chosen so that the number $M$ of its rows is
 \end{equation}  
 where $\delta_k$, referred to as $restricted \enspace isometry \enspace constant$, is the smallest number preserving the inequality for the matrix $\Phi$. \
 
-Designing optimal sensing matrices goes beyond the scope of this thesis since the RIP and incoherence may be obtained with high probability by taking $\Phi$ as a random Gaussian matrix with independent and identically (iid) distributed elements\cite{candes2005signal} we will not devote more time for this topic. Particularly, we will use an iid Gaussian sensing matrix throughout the thesis unless otherwise specified.         
+Designing optimal sensing matrices goes beyond the scope of this thesis since the RIP and incoherence may be obtained with high probability by taking $\Phi$ as a random Gaussian matrix with independent and identically (iid) distributed elements\cite{candes2005signal} we will not devote more time for this topic. Particularly, we will use an iid Gaussian sensing matrix throughout the thesis unless otherwise specified.   
+
+\FloatBarrier      
 
 \subsection{Signal Recovery}
 Even though RIP (\ref{eq:rip1}) and incoherence theoretically ensure that a K-sparse signal can be entirely described with only $M$ measurements, it is still necessary to restore the original signal $\mathbf{x}$. A great deal of algorithms alredy existing accomplish the recontruction process by reading the measurements $\mathbf{x}$, the matrix  $\Phi$ and solving an optimization problem. Concretely, most recovery algorithms try to find the best approximation $\hat{x} = \Psi x$ for some transform basis $\Psi$. It has been proved \cite{candes2006near,Donoho01} that the optimal solution for that problem is $\hat{x}$ with the smallest $l_0$ norm from measurements $y$ given by         
@@ -54,20 +62,28 @@ This holds true because measurements $\mathbf{y}$ were taken using an iid Gausia
 
 In this thesis we do not aim to find an iterative solution for the aforementioned optimization problem in equation \ref{eq:minl1}, instead we explore the promising capabilities of using deep learning for image processing tasks.
 
+\FloatBarrier
+
 \section{Deep Learning}
 Deep learning is a modern field of machine learning that makes used of deep neural networks in order to learn representations of data with several layers of abstraction. It has been an active research topic during recent years because they have achieved state-of-the-art results in image processing, video, speech and audio applications. It also solves the inability of traditional machine-learning methods to process plain raw data. Moreover, there is no need to have extensive experience in order to engineer features that transform data into useful representations or feature vectors that will ultimately allow the learning algorithm detect or classify the data. \
 
 Deep-learning techniques, whether supervised or unsupervised, learn multiple level representations. Such representation are realized by simple but non-linear entities transforming the representation level by level into a higher and more abstract one. By stacking a sufficient number of such layers and by implementing a learning process, highly complex functions can be learned and accurately approximated. The main singularity of such layers is that the features are learned without much human intervention, that is clever engineering from a person with very specialized knowledge. Rather, those features are learned directly from the data.   \   
 
-Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}.  
+Because deep learning has proved to be effective in overcoming difficulties that have caused trouble in the artificial intelligence community for years and because more and more data is becoming available, it is highly expectated that deep learning will achieve more accomplishments in the near future \cite{lecun2015deep}. 
+
+\FloatBarrier 
 
 \subsection{Supervised learning} \label{sec:superv}
-Supervised machine learning algorithms are trained using data composed of a group of inputs $\mathbf{x}$ and an analogous label $\mathbf{y}$. The main reason for this learning approach is to produce the most accurate mapping $f : \mathbf{x} \mapsto \mathbf{y} $ that is used to reproduce more labels. Examples for this kind of task are: classifying hand-written digits. Normally, we have a set of given hand-written numbers paired with the correct discrete class and we would like to train a model so that in the future we receive more hand-written digits and hopefully they will be correctly classified. On the other hand, we have a set of compressed measurements and its respective original images. In this case, we have a regression problem and our model will be trained so that new compressed measurements are fed into it and successful images are reconstructed.   
+Supervised machine learning algorithms are trained using data composed of a group of inputs $\mathbf{x}$ and an analogous label $\mathbf{y}$. The main reason for this learning approach is to produce the most accurate mapping $f : \mathbf{x} \mapsto \mathbf{y} $ that is used to reproduce more labels. Examples for this kind of task are: classifying hand-written digits. Normally, we have a set of given hand-written numbers paired with the correct discrete class and we would like to train a model so that in the future we receive more hand-written digits and hopefully they will be correctly classified. On the other hand, we have a set of compressed measurements and its respective original images. In this case, we have a regression problem and our model will be trained so that new compressed measurements are fed into it and successful images are reconstructed.  
+
+\FloatBarrier 
 
 \subsection{Unsupervised learning} \label{sec:unsuperv}
 Unlike supervised learning unsupervised learning is not given an explicit label $\mathbf{y}$. That means, the learning algorithm only has access to the input  $\mathbf{x}$ as the training data. The applications of unsupervised learning are: clustering, that is finding similarities on the data for a particular number of groups; density estimation, which aims to discover a distribution explaining the input data. Finally, unsupervised learning used to reduce the dimensionality of the input into a lower one that retains as much information as possible. \
 
 In our case, we use the unsupervised approach to both learn a sensing matrix $\Phi$ and  reconstruct the image back to its original size from these measurement. 
+
+\FloatBarrier
         
 \subsection{Neural Networks} \label{sec:NNs}
 Neural networks (NN's), in the field of machine learning, are a mathematical attempt to approximate and estimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's, they have found effective and active usage during recent years. There are three major concepts concerning NN's that one has to deal with to make use of them:  network architecture, activation function and network training.
@@ -279,8 +295,12 @@ A practical difficulty, common to all algorithms following gradient descent appr
 
 \end{itemize} 
 
+\FloatBarrier
+
 \subsection{Convolutional Neural Networks}
 Convolutional Neural Networks (CNN's/ConvNets) are a subset of the previously described neural networks. They are also built of neurons that aim to learn weight parameters $\omega$ and bias parameters $b$ by performing dot products and normally followed by one of the afore mention nonllinear functions. The main difference, however, is that CNN's assume that the input data exposes high correlation in at least one dimension, for example images, and exploits that nature. The imput data is convolved through the network during the forward pass and the number of parameters is lesser because the dot products are only computed in certain regions and not in the image as a whole.   
+
+\FloatBarrier
 
 \subsubsection{CNN architecture}
 In contrast with fully connected networks, the layers of CNN's are arranged in a 3D fashion seen as: width, height, depth. It differentiates in the sense that only a small subset of a layer connects to the one before it, thus reducing the number of neurons and encapsulating certain features in the input image as shown in  figure \ref{fig:CNNim1}. \
@@ -291,13 +311,13 @@ CNN's are assembled by interconnecting three different types of layers one after
 
 \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.6]{CNN1.png} 
+\includegraphics[scale=0.7]{CNN1.png} 
 \caption[Fully connected network VS CNN]{\textbf{Left:} Fully connected network with one hidden layer. \textbf{Right} 3D (width, height, depth) CNN implementation. Each input dimension or channel is convolved with all kernels and each element in the kernel represent a neuron.}
 \label{fig:CNNim1} 
 \end{figure}
 \begin{figure}[tb] 
 \centering 
-\includegraphics[scale=0.6]{CNN2.png} 
+\includegraphics[scale=0.7]{CNN2.png} 
 \caption[Convolution layer]{Example of a convolution layer in a 3D input with parameters Initial input volume $5 \times 5$, $K=2$, $F=3$, $S=2$ and $P=1$.}
 \label{fig:CNNim2} 
 \end{figure}
@@ -324,4 +344,6 @@ Sometimes it is necessary to preserve the original sizes of height and width, li
 \item \textbf{Activation function for CNN's} normally refers to a linear rectifier function ReLu \ref{fig:ReLu1}. It is explicitly given as another layer in the network and allows for efficient gradient propagation. It is very popular because not only is its computation easier than other activation functions like sigmoid \ref{fig:Sigfun1} or tahnh \ref{fig:tanhfun1} but, it also decreases the probability for observing vanishing gradients.
 
 \end{itemize}
+
+\FloatBarrier
 
