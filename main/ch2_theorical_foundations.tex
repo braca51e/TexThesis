@@ -20,7 +20,8 @@ CS takes advantage of the certainty that plentiful natural signals are sparse or
 \FloatBarrier
 
 \subsection{Incoherence}
-Measurements in CS are obtained by using a linear operator that takes $M < N$ inner products between $\mathbf{x}$ and a set of vectors $\{\phi\}_{i=1}^{M}$. \begin{figure}[tb] 
+Measurements in CS are obtained by using a linear operator that takes $M < N$ inner products between $\mathbf{x}$ and a set of vectors $\{\phi\}_{i=1}^{M}$. 
+\begin{figure}[!tb] 
 \centering 
 \includegraphics[scale=0.8]{CS1.png} 
 \caption[Compressed sensing measurement process]{Measurement process in compressed sensing.}
@@ -87,7 +88,7 @@ In our case, we use the unsupervised approach to both learn a sensing matrix $\P
         
 \subsection{Neural Networks} \label{sec:NNs}
 Neural networks (NN's), in the field of machine learning, are a mathematical attempt to approximate and estimate functions in the same way that many biological systems do. Even though its origins dates back to the 40's and 60's, they have found effective and active usage during recent years. There are three major concepts concerning NN's that one has to deal with to make use of them:  network architecture, activation function and network training.
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \includegraphics[scale=0.6]{NN1.png} 
 \caption[Neural network example architecture]{A neural network takes $x_D$ inputs and gives $y_K$ outputs. Another important term is the number of hidden units which refers to the number of layers between the input and output layers. The term deep comes when the number of layers and its size grows larger. Most commonly $\omega_{MD}^{(i)}$ are called the weight parameters.}
@@ -117,7 +118,7 @@ Normally, $b$ is embedded into $\omega$ as an extra dimension to simplify its tr
 %\hspace{3em} \hspace{3em} f (x) = \begin{cases} 0 & \text{for } x < 0 \\ x & \text{for } x \geqslant 0    \end{cases} \hspace{3em} or \hspace{3em} f (x) = \max %(0,x) \hspace{3em}
 %\end{equation} 
 
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \begin{tikzpicture}  
 \begin{axis}[
@@ -145,7 +146,7 @@ Normally, $b$ is embedded into $\omega$ as an extra dimension to simplify its tr
 \label{fig:Sigfun1} 
 \end{figure}
 
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \begin{tikzpicture}  
 \begin{axis}[
@@ -173,7 +174,7 @@ Normally, $b$ is embedded into $\omega$ as an extra dimension to simplify its tr
 \label{fig:tanhfun1} 
 \end{figure}
 
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \begin{tikzpicture}  
 \begin{axis}[
@@ -212,7 +213,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 
 \item \textbf{Chain rule} is a mathematical formula allowing to compute the gradient of a function with respect to another function. It is of importance for NN's because it helps find the derivative of the error between input and the output. Figure \ref{fig:CRim1} shows how the  gradient is computed through the network.
 
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \includegraphics[scale=1.1]{CR1.png} 
 \caption[Chain rule in neural networks]{Chain rule computation in the network.}
@@ -221,7 +222,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 
 \item \textbf{Forward pass} is the process of taking the desired input and transforming it according to the current network parameters. The output is then compared with a desired target to obtain the error. Figure \ref{fig:FPim1} provides a graphical representation. 
 
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \includegraphics[scale=0.7]{FP1.png} 
 \caption[Forward pass to compute error]{Forward pass is used to compute the predictions using the current values of weight parameters.}
@@ -230,7 +231,7 @@ thereby obtaining the optimum values for $\omega$. The actual minimization step 
 
 \item \textbf{Backpropagation} is a technique that permits NN's to learn function approximations. Once the forward pass is carried out, the error is obtained evaluating loss function. Afterwards,  the gradient of the loss function with respect to the given input is recursively propagated through the network. The weights $\omega$ are updated by moving towards the minimum of the loss function. Figure \ref{fig:BPim1} depicts the process. The process of completing a forwards pass, error computation, loss gradient and backpropagation over all training examples is called epoch. 
 
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \includegraphics[scale=0.7]{BP1.png} 
 \caption[Backpropagation process through the network]{After the error has been computed, it is backpropagated through the network updating $\omega$ parameters accordingly.}
@@ -309,13 +310,13 @@ CNN's are assembled by interconnecting three different types of layers one after
 \begin{itemize}
 \item \textbf{Convolutional layer} is the main part composing a CNN. It computes the dot product between parameters $\omega$ and a small area of the input image. Its  functionality and output size are controlled by four hyperparameters: number of kernels or filters $K$, size of kernel filters $F$, number of zero padding $P$ and stride $S$. Figure \ref{fig:CNNim2} shows the mechanism that  CNN's use, each channel of the input image is convolved with the filters generating an output.  \
 
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
-\includegraphics[scale=0.7]{CNN1.png} 
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{CNN1.png} 
 \caption[Fully connected network VS CNN]{\textbf{Left:} Fully connected network with one hidden layer. \textbf{Right} 3D (width, height, depth) CNN implementation. Each input dimension or channel is convolved with all kernels and each element in the kernel represent a neuron.}
 \label{fig:CNNim1} 
 \end{figure}
-\begin{figure}[tb] 
+\begin{figure}[!tb] 
 \centering 
 \includegraphics[scale=0.7]{CNN2.png} 
 \caption[Convolution layer]{Example of a convolution layer in a 3D input with parameters Initial input volume $5 \times 5$, $K=2$, $F=3$, $S=2$ and $P=1$.}
